@@ -6,7 +6,6 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { CoreModule } from './core/core.module';
-import { SharedModule } from './shared/shared.module';
 
 import { AppRoutingModule } from './app-routing.module';
 
@@ -14,9 +13,11 @@ import { AppRoutingModule } from './app-routing.module';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
-import { HomeModule } from './home/home.module';
-
 import { AppComponent } from './app.component';
+import { BodyFrameComponent } from './page/body-frame/body-frame.component';
+import { ExplorerComponent } from './page/body-frame/explorer/explorer.component';
+import { EditorComponent } from './page/body-frame/editor/editor.component';
+import { ViewerComponent } from './page/body-frame/viewer/viewer.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -24,14 +25,12 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
 }
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, BodyFrameComponent, ExplorerComponent, EditorComponent, ViewerComponent],
   imports: [
     BrowserModule,
     FormsModule,
     HttpClientModule,
     CoreModule,
-    SharedModule,
-    HomeModule,
     AppRoutingModule,
     TranslateModule.forRoot({
       loader: {

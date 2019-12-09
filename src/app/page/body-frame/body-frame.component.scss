@@ -1,0 +1,40 @@
+.body-frame {
+  height: 100%;
+  background-color: gray;
+
+  .explorer {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    background-color: #660000;
+  }
+
+  .editor {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    background-color: #006600;
+  }
+
+  .viewer {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    background-color: rgba(148, 18, 18, .5);
+  }
+
+  .resize {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    width: 10px;
+    color: red;
+    z-index: 1000;
+
+    &:hover {
+      cursor: e-resize;
+    }
+  }
+}

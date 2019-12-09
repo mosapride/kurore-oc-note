@@ -1,11 +1,11 @@
 {
-  "name": "angular-electron",
-  "version": "6.4.0",
-  "description": "Angular 8 with Electron (Typescript + SASS + Hot Reload)",
-  "homepage": "https://github.com/maximegris/angular-electron",
+  "name": "kurore-oc-note",
+  "version": "1.0.0",
+  "description": "Markdown Editor",
+  "homepage": "https://github.com/mosapride/kurore-oc-note",
   "author": {
-    "name": "Maxime GRIS",
-    "email": "maxime.gris@gmail.com"
+    "name": "kurore",
+    "email": "mosapride01@gmail.com"
   },
   "keywords": [
     "angular",
@@ -14,7 +14,8 @@
     "typescript",
     "eslint",
     "spectron",
-    "sass"
+    "sass",
+    "markdown"
   ],
   "main": "main.js",
   "private": true,

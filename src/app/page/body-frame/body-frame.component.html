@@ -1,0 +1,14 @@
+<div class="body-frame" (document:mousemove)="mouseMove($event)" (document:moseup)="mouseUp($event)">
+
+  <div class="explorer" [style.right]="getWindowWidth() - explolerWidht + 'px'">
+    <app-explorer></app-explorer>
+  </div>
+  <div class="resize" [style.left]="explolerWidht - 5 + 'px'" (mousedown)="doResize('e2e')" ></div>
+  <div class="editor" [style.left]="explolerWidht + 'px'" [style.right]="getExplolerStyleRight() + 'px'">
+    <app-editor></app-editor>
+  </div>
+  <div class="resize" [style.left]="getViewerStyleLeft() -5 + 'px'" (mousedown)="doResize('e2v')" ></div>
+  <div class="viewer" #viewer [style.left]="getViewerStyleLeft() + 'px'">
+    <app-viewer></app-viewer>
+  </div>
+</div>
