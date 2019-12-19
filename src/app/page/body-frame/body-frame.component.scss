@@ -1,5 +1,11 @@
 .body-frame {
-  height: 100%;
+  position: relative;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  touch-action: initial;
+
   background-color: gray;
 
   .explorer {
@@ -7,14 +13,14 @@
     top: 0;
     bottom: 0;
     left: 0;
-    background-color: #660000;
+    background-color: #54B345;
   }
 
   .editor {
     position: fixed;
     top: 0;
     bottom: 0;
-    background-color: #006600;
+    background-color: #D197AB;
   }
 
   .viewer {
@@ -22,19 +28,23 @@
     top: 0;
     bottom: 0;
     right: 0;
-    background-color: rgba(148, 18, 18, .5);
+    background-color: #9BADCB;
   }
 
   .resize {
     position: fixed;
     top: 0;
     bottom: 0;
-    width: 10px;
-    color: red;
-    z-index: 1000;
+    width: 4px;
+    background-color: black;
+    cursor: e-resize;
 
     &:hover {
       cursor: e-resize;
     }
   }
+}
+
+.do-mouse-event {
+  pointer-events: none;
 }

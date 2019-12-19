@@ -1,14 +1,17 @@
 <div class="body-frame" (document:mousemove)="mouseMove($event)" (document:moseup)="mouseUp($event)">
 
-  <div class="explorer" [style.right]="getWindowWidth() - explolerWidht + 'px'">
-    <app-explorer></app-explorer>
+  <div class="explorer" [ngClass]="{'do-mouse-event' : (resizeTargetFlg !== undefined)}" [style.left]="viewElementPxBean.getPx(ENUM_VIEW.explorerLeft)" [style.width]="viewElementPxBean.getPx(ENUM_VIEW.explorerWidth)">
+    <app-explorer  [ngClass]="{'do-mouse-event' : (resizeTargetFlg !== undefined)}" ></app-explorer>
   </div>
-  <div class="resize" [style.left]="explolerWidht - 5 + 'px'" (mousedown)="doResize('e2e')" ></div>
-  <div class="editor" [style.left]="explolerWidht + 'px'" [style.right]="getExplolerStyleRight() + 'px'">
-    <app-editor></app-editor>
+  <div class="editor"  [style.left]="viewElementPxBean.getPx(ENUM_VIEW.editorLeft)" [style.width]="viewElementPxBean.getPx(ENUM_VIEW.editorWidth)">
+    <app-editor  [ngClass]="{'do-mouse-event' : (resizeTargetFlg !== undefined)}" ></app-editor>
   </div>
-  <div class="resize" [style.left]="getViewerStyleLeft() -5 + 'px'" (mousedown)="doResize('e2v')" ></div>
-  <div class="viewer" #viewer [style.left]="getViewerStyleLeft() + 'px'">
-    <app-viewer></app-viewer>
+  <div class="viewer" #viewer [style.left]="viewElementPxBean.getPx(ENUM_VIEW.viewerLeft)" [style.width]="viewElementPxBean.getPx(ENUM_VIEW.viewerWidth)">
+    <app-viewer  [ngClass]="{'do-mouse-event' : (resizeTargetFlg !== undefined)}" ></app-viewer>
   </div>
+
+  <app-sash class="resize" (mousedown)="setResizeTargetName(ENUM_MOUSE_EVENT_TARGET.explorer2editor)" [name]="ENUM_MOUSE_EVENT_TARGET.explorer2editor" (mousedown)="setMouseDownId(ENUM_MOUSE_EVENT_TARGET.explorer2editor)" [style.left]="viewElementPxBean.getPx(ENUM_VIEW.explorer2editor)">
+  </app-sash>
+  <app-sash class="resize" (mousedown)="setResizeTargetName(ENUM_MOUSE_EVENT_TARGET.editor2viewer)" [name]="ENUM_MOUSE_EVENT_TARGET.editor2viewer" (mousedown)="setMouseDownId(ENUM_MOUSE_EVENT_TARGET.editor2viewer)" [style.left]="viewElementPxBean.getPx(ENUM_VIEW.editor2viewer)">
+  </app-sash>
 </div>

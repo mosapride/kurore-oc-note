@@ -18,6 +18,7 @@ import { BodyFrameComponent } from './page/body-frame/body-frame.component';
 import { ExplorerComponent } from './page/body-frame/explorer/explorer.component';
 import { EditorComponent } from './page/body-frame/editor/editor.component';
 import { ViewerComponent } from './page/body-frame/viewer/viewer.component';
+import { SashComponent } from './page/ui/sash/sash.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -25,7 +26,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
 }
 
 @NgModule({
-  declarations: [AppComponent, BodyFrameComponent, ExplorerComponent, EditorComponent, ViewerComponent],
+  declarations: [AppComponent, BodyFrameComponent, ExplorerComponent, EditorComponent, ViewerComponent, SashComponent],
   imports: [
     BrowserModule,
     FormsModule,

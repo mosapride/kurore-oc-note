@@ -1,0 +1,13 @@
+.app-sash {
+  position: fixed;
+  top: 0;
+  bottom :0px;
+  width: 4px;
+  height: 100%;
+  z-index: 35;
+  touch-action: none;
+  cursor: default !important;
+  pointer-events: none !important;
+  white-space: initial;
+  background-color: red;
+}
