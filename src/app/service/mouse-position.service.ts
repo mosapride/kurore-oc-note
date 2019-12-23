@@ -28,7 +28,6 @@ export class MousePositionService {
   }
 
   setMouseMoveEvent(e: MouseEvent) {
-    console.log(`set target = ${this.target}`);
     if (this.target === undefined) {
       return;
     }

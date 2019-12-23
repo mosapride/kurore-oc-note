@@ -6,7 +6,7 @@
   <div class="editor"  [style.left]="viewElementPxBean.getPx(ENUM_VIEW.editorLeft)" [style.width]="viewElementPxBean.getPx(ENUM_VIEW.editorWidth)">
     <app-editor  [ngClass]="{'do-mouse-event' : (resizeTargetFlg !== undefined)}" ></app-editor>
   </div>
-  <div class="viewer" #viewer [style.left]="viewElementPxBean.getPx(ENUM_VIEW.viewerLeft)" [style.width]="viewElementPxBean.getPx(ENUM_VIEW.viewerWidth)">
+  <div class="viewer" [style.left]="viewElementPxBean.getPx(ENUM_VIEW.viewerLeft)" [style.width]="viewElementPxBean.getPx(ENUM_VIEW.viewerWidth)">
     <app-viewer  [ngClass]="{'do-mouse-event' : (resizeTargetFlg !== undefined)}" ></app-viewer>
   </div>
 

@@ -1,5 +1,5 @@
 import { MousePositionService, EnumMouseEventTarget, IMousePositionFire } from './../../service/mouse-position.service';
-import { Component, OnInit, AfterContentInit, HostListener, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, AfterContentInit, HostListener } from '@angular/core';
 
 const INIT_EXPLORER_WIDTH = 250;
 
@@ -16,28 +16,17 @@ export class BodyFrameComponent implements OnInit, AfterContentInit {
   viewElementPxBean = new ViewElementPxBean();
   elementResizer: ElementResizer;
 
-  @ViewChild('viewer', { static: true }) viewer: ElementRef;
 
   resizeTargetFlg: EnumMouseEventTarget | undefined;
   constructor(private mousePositionService: MousePositionService) {
   }
 
-  private resizeBodyFrameElement() {
-    // this.viewElementPxBean.bodyWidth(window.innerWidth);
-    // this.viewElementPxBean.bodyHeight(window.innerHeight);
-
-  }
-
   ngOnInit() {
-    this.resizeBodyFrameElement();
-
   }
 
   ngAfterContentInit(): void {
     this.elementResizer = new ElementResizer(this.viewElementPxBean);
     this.mousePositionService.$xSubject.subscribe(position => {
-      console.log(position);
-
       this.elementResizer.do(position);
     });
     this.elementResizer.init();
@@ -60,10 +49,7 @@ export class BodyFrameComponent implements OnInit, AfterContentInit {
   @HostListener('window:resize', ['$event'])
   onResize(e) {
     this.elementResizer.windowResizeListener();
-    console.log(this.viewElementPxBean.get(EnumView.explorerWidth));
-
   }
-
 
   doResize(type: EnumMouseEventTarget) {
     this.resizeTargetFlg = type;
@@ -165,7 +151,6 @@ class ElementResizer {
   }
 
   private explorer2editor(x: number) {
-    const ww = window.innerWidth
     let nExplorerWidth = window.innerWidth - x;
     this._viewElementPxBean.set(EnumView.explorerLeft, 0);
     this._viewElementPxBean.set(EnumView.explorerWidth, x);
@@ -186,7 +171,6 @@ class ElementResizer {
     this._viewElementPxBean.set(EnumView.viewerWidth, ww - x);
 
     this._viewElementPxBean.set(EnumView.editorWidth, x - nExplorerWidth);
-    console.log(x - nExplorerWidth)
   }
 
 }
