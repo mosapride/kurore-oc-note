@@ -19,6 +19,7 @@ import { ExplorerComponent } from './page/body-frame/explorer/explorer.component
 import { EditorComponent } from './page/body-frame/editor/editor.component';
 import { ViewerComponent } from './page/body-frame/viewer/viewer.component';
 import { SashComponent } from './page/ui/sash/sash.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -39,7 +40,8 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
         useFactory: HttpLoaderFactory,
         deps: [HttpClient]
       }
-    })
+    }),
+    BrowserAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
