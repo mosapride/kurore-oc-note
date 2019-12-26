@@ -151,6 +151,16 @@ class ElementResizer {
     }
   }
 
+  /**
+   * explorer、editor間のサイズ変更イベント処理.
+   *
+   * 1. explorerが消えないように特定座標になった場合、疑似x値を入れる
+   * 2. viewerが消えないように特定座標になった場合、疑似x値を入れる
+   *
+   * @private
+   * @param {number} x 座標
+   * @memberof ElementResizer
+   */
   private explorer2editor(x: number) {
     if (x <= 150) {
       x = 180;
@@ -170,6 +180,16 @@ class ElementResizer {
 
   }
 
+  /**
+   * editor、viewer間のサイズ変更イベント処理.
+   *
+   * 1. editorが消えないように特定座標になった場合、疑似x値を入れる
+   * 2. viewerが消えないように特定座標になった場合、疑似x値を入れる
+   *
+   * @private
+   * @param {number} x
+   * @memberof ElementResizer
+   */
   private editor2viewer(x: number) {
     const ww = window.innerWidth;
     let explorerWidth = this._viewElementPxBean.get(EnumView.explorerWidth);
