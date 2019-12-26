@@ -155,6 +155,9 @@ class ElementResizer {
     if (x <= 150) {
       x = 180;
     }
+    if (window.innerWidth <= (x + 300)) {
+      x = window.innerWidth - 300;
+    }
     let nExplorerWidth = window.innerWidth - x;
     this._viewElementPxBean.set(EnumView.explorerLeft, 0);
     this._viewElementPxBean.set(EnumView.explorerWidth, x);
