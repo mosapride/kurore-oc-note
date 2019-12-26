@@ -44,6 +44,7 @@ export class BodyFrameComponent implements OnInit, AfterContentInit {
   @HostListener('document:mouseup', ['$event'])
   mouseUp(e) {
     this.mousePositionService.resetTarget();
+    this.resizeTargetFlg = undefined;
   }
 
   @HostListener('window:resize', ['$event'])
@@ -135,7 +136,7 @@ class ElementResizer {
     this._viewElementPxBean.set(EnumView.viewerWidth, mg * vip);
 
     this._viewElementPxBean.set(EnumView.editor2viewer, window.innerWidth - (mg * vip));
-    this._viewElementPxBean.set(EnumView.viewerLeft,  window.innerWidth - (mg * vip));
+    this._viewElementPxBean.set(EnumView.viewerLeft, window.innerWidth - (mg * vip));
   }
 
 
@@ -151,6 +152,9 @@ class ElementResizer {
   }
 
   private explorer2editor(x: number) {
+    if (x <= 150) {
+      x = 180;
+    }
     let nExplorerWidth = window.innerWidth - x;
     this._viewElementPxBean.set(EnumView.explorerLeft, 0);
     this._viewElementPxBean.set(EnumView.explorerWidth, x);
@@ -164,13 +168,21 @@ class ElementResizer {
   }
 
   private editor2viewer(x: number) {
-    const ww = window.innerWidth
-    let nExplorerWidth = this._viewElementPxBean.get(EnumView.explorerWidth);
+    const ww = window.innerWidth;
+    let explorerWidth = this._viewElementPxBean.get(EnumView.explorerWidth);
+    if ((x - explorerWidth) <= 150) {
+      x = explorerWidth + 175;
+    }
+
+    if ((ww - x) <= 150) {
+      x = ww - 175;
+    }
+
     this._viewElementPxBean.set(EnumView.editor2viewer, x);
     this._viewElementPxBean.set(EnumView.viewerLeft, x);
     this._viewElementPxBean.set(EnumView.viewerWidth, ww - x);
 
-    this._viewElementPxBean.set(EnumView.editorWidth, x - nExplorerWidth);
+    this._viewElementPxBean.set(EnumView.editorWidth, x - explorerWidth);
   }
 
 }
