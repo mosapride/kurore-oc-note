@@ -1,3 +1,9 @@
+/* -------------------------------------------------------------------------------
+ * ファイルツリーサービス.
+ *
+ * エクスプロラーに必要なディレクトリ・ファイルツリー情報を管理する
+ * -------------------------------------------------------------------------------*/
+
 import { sep } from 'path';
 import { Injectable } from '@angular/core';
 import { ElectronService } from '../core/services';
@@ -31,7 +37,6 @@ class PossessionFiles implements IPossessionFiles {
     this.openFlg = openFlg;
     this.possessionFiles = [];
   }
-
 }
 
 @Injectable({
@@ -41,9 +46,6 @@ export class FileTreeService {
   treeWorkSpace: ITreeWorkSpace;
   possessionFiles: IPossessionFiles;
   constructor(private es: ElectronService) {
-    let log = es.fs.statSync('D:\\');
-
-    console.log(log);
   }
 
   /**
@@ -53,12 +55,14 @@ export class FileTreeService {
    * @memberof FileTreeService
    */
   setTreeRoot(dir: string) {
+    console.log(dir);
     this.treeWorkSpace = new class implements ITreeWorkSpace {
       dir = '';
       possessionFiles = [];
     };
     this.treeWorkSpace.dir = dir;
     this.parseFileTree(this.treeWorkSpace);
+    console.log(this.treeWorkSpace);
   }
 
   /**
@@ -91,6 +95,10 @@ export class FileTreeService {
     for (let counter = 0; counter < names.length; counter++) {
       if (this.es.fs.statSync(dir + sep + names[counter]).isDirectory()) {
         possessionFiles.push(new PossessionFiles(dir, names[counter], depth + 1, true , false));
+        // Todo: 7階層までサポートとしてみる。永久ループとか怖いしね。
+        if (depth >= 7) {
+          continue;
+        }
         this._parseFileTree(dir + sep + names[counter], possessionFiles[counter].possessionFiles, depth + 1);
       } else {
         possessionFiles.push(new PossessionFiles(dir, names[counter], depth + 1, false , false));
