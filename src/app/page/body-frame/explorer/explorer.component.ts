@@ -1,3 +1,4 @@
+import { ElectronDialogService } from './../../../service/electron-dialog.service';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -7,9 +8,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ExplorerComponent implements OnInit {
 
-  constructor() { }
+  constructor( private ed : ElectronDialogService) { }
 
   ngOnInit() {
+  }
+
+  debug() {
+    this.ed.setWorkSpace();
   }
 
 }
