@@ -1,0 +1,15 @@
+@import "../../../variables";
+
+
+div {
+  height :100%;
+  background-color: $PRI-BACKGROUND-COLOR;
+  span {
+    margin : 3px 5px;
+  }
+  // iconボタンの無効化
+  .disable {
+    filter: contrast(0%) !important;
+    cursor: auto !important;
+  }
+}

@@ -27,6 +27,9 @@ $angular-electron-theme: mat-light-theme($angular-electron-primary, $angular-ele
 @include angular-material-theme($angular-electron-theme);
 
 /* You can add global styles to this file, and also import other style files */
+
+@import "./variables";
+
 html, body {
   margin: 0;
   padding: 0;
