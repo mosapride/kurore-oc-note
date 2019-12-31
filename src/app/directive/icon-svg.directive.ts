@@ -10,8 +10,6 @@ export class IconSvgDirective implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.src);
-    console.log(this.el.nativeElement.style);
     this.el.nativeElement.style.display = 'inline-block';
     this.el.nativeElement.style.width = this.size + 'px';
     this.el.nativeElement.style.height = this.size + 'px';
@@ -23,7 +21,7 @@ export class IconSvgDirective implements OnInit {
 
   @HostListener('mouseover')
   onMouseOver() {
-    this.el.nativeElement.style.filter = 'contrast(50%)';
+    this.el.nativeElement.style.filter = 'contrast(10%)';
   }
 
   @HostListener('mouseleave')
