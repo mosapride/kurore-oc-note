@@ -58,10 +58,15 @@ export class FileTreeService {
   /**
    * ワークディレクトリを設定する。
    *
-   * @param {string} dir
+   * 下記機能を提供を行う。
+   *
+   * * `$iTreeWorkSpaceSubject`によるtree情報の通知
+   * * ワークディレクトリ更新監視
+   *
+   * @param {string} dir ワークディレクトリ
    * @memberof FileTreeService
    */
-  setTreeRoot(dir: string) {
+  public setTreeRoot(dir: string) {
     this.treeWorkSpace = new class implements ITreeWorkSpace {
       dir = '';
       possessionFiles = [];
@@ -72,7 +77,9 @@ export class FileTreeService {
   }
 
   /**
-   * ワークスペースを元にtree情報を作成する。
+   * ワークスペースを元にtree情報を作成する.
+   *
+   * 作成したtree情報は`$iTreeWorkSpaceSubject`により通達を行う。
    *
    * @private
    * @param {ITreeWorkSpace} tws ワークスペースツリー情報
@@ -88,7 +95,7 @@ export class FileTreeService {
   /**
    * 非同期でワーススペースの変更監視を行う。
    *
-   * すでに関し済みの場合は、現在監視済みのワークスペースを解除し、新しく設定されたワークスペースの監視を行う。
+   * すでに監視済みの場合は、現在監視済みのワークスペースを解除し、新しく設定されたワークスペースの監視を行う。(多重起動なし)
    * 変更が行われた場合は引数`ITreeWorkSpace`のツリー情報を更新を行う。
    *
    * @private
@@ -119,12 +126,17 @@ export class FileTreeService {
 
 }
 
-
+/**
+ * 処理部.
+ *
+ * @class PrcFS
+ */
 class PrcFS {
   constructor(private es: ElectronService) { }
 
   /**
-   * ファイルの存在有無
+   * ファイルの存在有無.
+   *
    * @param fullPath フルパス
    * @return true:存在する/false:存在しない
    */
@@ -185,6 +197,20 @@ class PrcFS {
     });
   }
 
+  /**
+   * ワークスペースの再ロードを行う.
+   *
+   * 監視対象のファイル・ディレクトリの変更が行われたときに使用する。
+   *
+   * フォルダが`IPossessionFiles.openFlg`が`true`の状態は保持する。
+   *
+   * @param {string} workDirectory 監視ディレクトリ
+   * @param {ITreeWorkSpace} oldTreeExplorer 現行のディレクトリ情報
+   * @param {number} searchedDrectoryCnt 階層番号(初期値0)
+   * @param {(tree: ITreeWorkSpace) => void} callback 変更された情報を返す。
+   * @returns {void}
+   * @memberof PrcFS
+   */
   public reloadWorkDirectory(workDirectory: string, oldTreeExplorer: ITreeWorkSpace, searchedDrectoryCnt: number, callback: (tree: ITreeWorkSpace) => void): void {
     if (!oldTreeExplorer) {
       return;
@@ -195,7 +221,7 @@ class PrcFS {
       possessionFiles = [];
     };
     this.parseFileTree(treeWorkSpace.dir, treeWorkSpace.possessionFiles, searchedDrectoryCnt);
-    const openFileList = this._getOpenDirectoryList(oldTreeExplorer);
+    const openFileList = this.getOpenDirectoryList(oldTreeExplorer);
     for (const tree of treeWorkSpace.possessionFiles) {
       this._reloadWorkDrectory(openFileList, tree);
     }
@@ -213,20 +239,20 @@ class PrcFS {
     }
   }
 
-  private _getOpenDirectoryList(exp: ITreeWorkSpace): Array<string> {
+  private getOpenDirectoryList(exp: ITreeWorkSpace): Array<string> {
     const rtnArray = [];
     for (const t of exp.possessionFiles) {
-      this.__getOpenDirectoryList(rtnArray, t);
+      this._getOpenDirectoryList(rtnArray, t);
     }
     return rtnArray;
   }
 
-  private __getOpenDirectoryList(fullPathList: Array<string>, file: IPossessionFiles): void {
+  private _getOpenDirectoryList(fullPathList: Array<string>, file: IPossessionFiles): void {
     if (file.openFlg) {
       fullPathList.push(file.dir + file.name);
     }
     for (const child of file.possessionFiles) {
-      this.__getOpenDirectoryList(fullPathList, child);
+      this._getOpenDirectoryList(fullPathList, child);
     }
   }
 
