@@ -10,6 +10,7 @@
     <app-viewer  [ngClass]="{'do-mouse-event' : (resizeTargetFlg !== undefined)}" ></app-viewer>
   </div>
 
+  <app-menu></app-menu>
   <app-sash class="resize" (mousedown)="setResizeTargetName(ENUM_MOUSE_EVENT_TARGET.explorer2editor)" [name]="ENUM_MOUSE_EVENT_TARGET.explorer2editor" (mousedown)="setMouseDownId(ENUM_MOUSE_EVENT_TARGET.explorer2editor)" [style.left]="viewElementPxBean.getPx(ENUM_VIEW.explorer2editor)">
   </app-sash>
   <app-sash class="resize" (mousedown)="setResizeTargetName(ENUM_MOUSE_EVENT_TARGET.editor2viewer)" [name]="ENUM_MOUSE_EVENT_TARGET.editor2viewer" (mousedown)="setMouseDownId(ENUM_MOUSE_EVENT_TARGET.editor2viewer)" [style.left]="viewElementPxBean.getPx(ENUM_VIEW.editor2viewer)">

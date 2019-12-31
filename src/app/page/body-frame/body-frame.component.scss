@@ -1,6 +1,16 @@
+@import "../../../variables";
+
+app-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: $TOP_PX;
+}
+
 .body-frame {
   position: relative;
-  top: 0px;
+  top: $TOP_PX;
   bottom: 0px;
   left: 0px;
   right: 0px;
@@ -10,7 +20,7 @@
 
   .explorer {
     position: fixed;
-    top: 0;
+    top: $TOP_PX;
     bottom: 0;
     left: 0;
     background-color: #54B345;
@@ -18,14 +28,14 @@
 
   .editor {
     position: fixed;
-    top: 0;
+    top: $TOP_PX;
     bottom: 0;
     background-color: #D197AB;
   }
 
   .viewer {
     position: fixed;
-    top: 0;
+    top: $TOP_PX;
     bottom: 0;
     right: 0;
     background-color: #9BADCB;
@@ -33,10 +43,10 @@
 
   .resize {
     position: fixed;
-    top: 0;
+    top: $TOP_PX;
     bottom: 0;
     width: 4px;
-    background-color: black;
+    background-color: rgba(0,0,0,0);
     cursor: e-resize;
 
     &:hover {
