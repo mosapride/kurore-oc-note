@@ -7,6 +7,8 @@
 import { sep } from 'path';
 import { Injectable } from '@angular/core';
 import { ElectronService } from '../core/services';
+import { FSWatcher } from 'fs';
+import { Subject } from 'rxjs';
 
 export interface ITreeWorkSpace {
   dir: string;
@@ -45,7 +47,12 @@ class PossessionFiles implements IPossessionFiles {
 export class FileTreeService {
   treeWorkSpace: ITreeWorkSpace;
   possessionFiles: IPossessionFiles;
+  $iTreeWorkSpaceSubject: Subject<ITreeWorkSpace>;
+  fsWatcher: FSWatcher;
+  prcFS: PrcFS;
   constructor(private es: ElectronService) {
+    this.prcFS = new PrcFS(this.es);
+    this.$iTreeWorkSpaceSubject = new Subject<ITreeWorkSpace>();
   }
 
   /**
@@ -55,14 +62,13 @@ export class FileTreeService {
    * @memberof FileTreeService
    */
   setTreeRoot(dir: string) {
-    console.log(dir);
     this.treeWorkSpace = new class implements ITreeWorkSpace {
       dir = '';
       possessionFiles = [];
     };
     this.treeWorkSpace.dir = dir;
     this.parseFileTree(this.treeWorkSpace);
-    console.log(this.treeWorkSpace);
+    this.fsWatch$(this.treeWorkSpace);
   }
 
   /**
@@ -74,11 +80,69 @@ export class FileTreeService {
    */
   private parseFileTree(tws: ITreeWorkSpace) {
     tws.possessionFiles = [];
-    this._parseFileTree(tws.dir, tws.possessionFiles, 0);
+    this.prcFS.parseFileTree(tws.dir, tws.possessionFiles, 0);
+    this.$iTreeWorkSpaceSubject.next(tws);
+  }
+
+
+  /**
+   * 非同期でワーススペースの変更監視を行う。
+   *
+   * すでに関し済みの場合は、現在監視済みのワークスペースを解除し、新しく設定されたワークスペースの監視を行う。
+   * 変更が行われた場合は引数`ITreeWorkSpace`のツリー情報を更新を行う。
+   *
+   * @private
+   * @param {ITreeWorkSpace} tws 監視対象ワークスペース情報
+   * @memberof FileTreeService
+   */
+  private fsWatch$(tws: ITreeWorkSpace): void {
+    console.log(`fsWatcher init`);
+    if (this.fsWatcher) {
+      this.fsWatcher.close();
+
+    }
+
+    this.fsWatcher = this.es.fs.watch(tws.dir, { persistent: true, recursive: true }, (event, filename) => {
+      console.log(`fsWatcher go`);
+      if (event === 'change') {
+        if (filename !== 'style.css') {
+          return;
+        }
+      }
+
+      this.prcFS.reloadWorkDirectory(this.treeWorkSpace.dir, this.treeWorkSpace, 0, tree => {
+        this.treeWorkSpace = tree;
+        this.$iTreeWorkSpaceSubject.next(this.treeWorkSpace);
+      });
+    });
+  }
+
+}
+
+
+class PrcFS {
+  constructor(private es: ElectronService) { }
+
+  /**
+   * ファイルの存在有無
+   * @param fullPath フルパス
+   * @return true:存在する/false:存在しない
+   */
+  public isStatFile(fullPath: string): boolean {
+    try {
+      if (this.es.fs.statSync(fullPath).isFile()) {
+        return true;
+      }
+    } catch (e) {
+      return false;
+    }
+    return false;
   }
 
   /**
-   * ツリー情報を作成する。(再帰処理)
+   * ツリー情報を作成する。(再帰処理).
+   *
+   * dirからツリー情報を
    *
    * ツリー情報はソートされる。
    *  1. ディレクトリが上位
@@ -90,18 +154,18 @@ export class FileTreeService {
    * @param {number} depth ルートからの階層数
    * @memberof FileTreeService
    */
-  private _parseFileTree(dir: string, possessionFiles: IPossessionFiles[], depth: number) {
+  public parseFileTree(dir: string, possessionFiles: IPossessionFiles[], depth: number) {
     const names = this.es.fs.readdirSync(dir);
     for (let counter = 0; counter < names.length; counter++) {
       if (this.es.fs.statSync(dir + sep + names[counter]).isDirectory()) {
-        possessionFiles.push(new PossessionFiles(dir, names[counter], depth + 1, true , false));
+        possessionFiles.push(new PossessionFiles(dir, names[counter], depth + 1, true, false));
         // Todo: 7階層までサポートとしてみる。永久ループとか怖いしね。
         if (depth >= 7) {
           continue;
         }
-        this._parseFileTree(dir + sep + names[counter], possessionFiles[counter].possessionFiles, depth + 1);
+        this.parseFileTree(dir + sep + names[counter], possessionFiles[counter].possessionFiles, depth + 1);
       } else {
-        possessionFiles.push(new PossessionFiles(dir, names[counter], depth + 1, false , false));
+        possessionFiles.push(new PossessionFiles(dir, names[counter], depth + 1, false, false));
       }
     }
     possessionFiles.sort((a, b) => {
@@ -119,6 +183,51 @@ export class FileTreeService {
       }
       return 0;
     });
+  }
+
+  public reloadWorkDirectory(workDirectory: string, oldTreeExplorer: ITreeWorkSpace, searchedDrectoryCnt: number, callback: (tree: ITreeWorkSpace) => void): void {
+    if (!oldTreeExplorer) {
+      return;
+    }
+
+    var treeWorkSpace = new class implements ITreeWorkSpace {
+      dir = workDirectory;
+      possessionFiles = [];
+    };
+    this.parseFileTree(treeWorkSpace.dir, treeWorkSpace.possessionFiles, searchedDrectoryCnt);
+    const openFileList = this._getOpenDirectoryList(oldTreeExplorer);
+    for (const tree of treeWorkSpace.possessionFiles) {
+      this._reloadWorkDrectory(openFileList, tree);
+    }
+    callback(treeWorkSpace);
+  }
+
+  private _reloadWorkDrectory(openFileList: Array<string>, file: IPossessionFiles) {
+    for (const f of openFileList) {
+      if (f === (file.dir + file.name)) {
+        file.openFlg = true;
+      }
+    }
+    for (const c of file.possessionFiles) {
+      this._reloadWorkDrectory(openFileList, c);
+    }
+  }
+
+  private _getOpenDirectoryList(exp: ITreeWorkSpace): Array<string> {
+    const rtnArray = [];
+    for (const t of exp.possessionFiles) {
+      this.__getOpenDirectoryList(rtnArray, t);
+    }
+    return rtnArray;
+  }
+
+  private __getOpenDirectoryList(fullPathList: Array<string>, file: IPossessionFiles): void {
+    if (file.openFlg) {
+      fullPathList.push(file.dir + file.name);
+    }
+    for (const child of file.possessionFiles) {
+      this.__getOpenDirectoryList(fullPathList, child);
+    }
   }
 
 }
