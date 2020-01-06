@@ -1,6 +1,6 @@
 import { FileTreeService, ITreeWorkSpace } from './../../../service/file-tree.service';
 import { ElectronDialogService } from './../../../service/electron-dialog.service';
-import { Component, OnInit, AfterContentInit } from '@angular/core';
+import { Component, AfterContentInit } from '@angular/core';
 
 @Component({
   selector: 'app-explorer',

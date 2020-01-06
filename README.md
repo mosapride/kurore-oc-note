@@ -28,7 +28,10 @@ npm start
 npm run electron:windows
 ```
 
-
 ## License
 
 Licensed under the MIT license.
+
+## Acknowledgements
+
+* https://github.com/vscode-icons/vscode-icons

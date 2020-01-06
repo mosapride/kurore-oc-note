@@ -24,6 +24,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatDialogModule } from '@angular/material/dialog';
 import { IconSvgDirective } from './directive/icon-svg.directive';
 import { MenuComponent } from './page/menu/menu.component';
+import { ProssessionFileComponent } from './page/body-frame/explorer/prossession-file/prossession-file.component';
+import { IconComponent } from "./page/body-frame/explorer/prossession-file/icon/icon.component";
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -31,7 +33,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
 }
 
 @NgModule({
-  declarations: [AppComponent, BodyFrameComponent, ExplorerComponent, EditorComponent, ViewerComponent, SashComponent, IconSvgDirective, MenuComponent],
+  declarations: [AppComponent, BodyFrameComponent, ExplorerComponent, EditorComponent, ViewerComponent, SashComponent, IconSvgDirective, MenuComponent, ProssessionFileComponent, IconComponent],
   imports: [
     BrowserModule,
     FormsModule,

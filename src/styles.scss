@@ -41,3 +41,28 @@ html, body { height: 100%; }
 body { margin: 0; font-family: Consolas, Menlo, Monaco, "Droid Sans Mono" , "Courier New", monospace , ; }
 
 
+/*スクロールバー全体*/
+::-webkit-scrollbar {
+  width: 10px;
+  height : 10px;
+}
+
+::-webkit-scrollbar-track {
+	opacity: 0.1;
+}
+
+::-webkit-scrollbar-corner {
+  // background-color :inherit;
+  display: none;
+}
+
+/*スクロールバーの動く部分*/
+::-webkit-scrollbar-thumb {
+  background-color: rgba(100, 100, 100, 0.7); 
+  &:hover {
+    background-color: rgba(100, 100, 100, 0.7); 
+  }
+  &:active {
+    background-color: rgba(191, 191, 191, 0.4);
+  }
+}

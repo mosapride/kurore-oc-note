@@ -1,14 +1,5 @@
-<p>explorer works!</p>
-
-<!-- <svg xmlns="http://www.w3.org/2000/svg" appSvgIconSize viewBox="0 0 24 24">
-  <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
-  <path d="M0 0h24v24H0z" fill="none" /></svg> -->
-
-<button (click)="debug()">test</button>
-
-
-
-<p>美しい日本語</p>
-<p>
-  ファイル(F)
-</p>
+<ng-container *ngIf="iTreeWorkSpace">
+   <ng-container *ngFor="let file of iTreeWorkSpace.possessionFiles">
+     <app-prossession-file [file]="file" ></app-prossession-file>
+   </ng-container>
+</ng-container>

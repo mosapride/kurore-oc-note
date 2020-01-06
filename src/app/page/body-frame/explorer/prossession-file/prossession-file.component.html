@@ -1,0 +1,10 @@
+<div class="item" [style.padding-left]="file.depth * 8 + 'px'" (click)="clickEvent(file)">
+  <app-icon [isDirectory]="file.isDirectory" [openFlg]="file.openFlg" [name]="file.name"></app-icon>
+  {{file.name}}
+</div>
+
+<ng-container *ngIf="file.isDirectory && file.openFlg">
+  <ng-container *ngFor="let item of file.possessionFiles">
+    <app-prossession-file [file]="item"></app-prossession-file>
+  </ng-container>
+</ng-container>
