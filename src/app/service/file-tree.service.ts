@@ -10,18 +10,30 @@ import { ElectronService } from '../core/services';
 import { FSWatcher } from 'fs';
 import { Subject } from 'rxjs';
 
+/**
+ * ワークスペース管理.
+ *
+ * @export
+ * @interface ITreeWorkSpace
+ */
 export interface ITreeWorkSpace {
-  dir: string;
-  possessionFiles: IPossessionFiles[];
+  dir: string; // ワークスペースディレクトリ
+  possessionFiles: IPossessionFiles[]; // 所持しているファイル一覧
 }
 
+/**
+ * 所持ディレクトリ情報.
+ *
+ * @export
+ * @interface IPossessionFiles
+ */
 export interface IPossessionFiles {
-  dir: string;
-  name: string;
-  depth: number;
-  isDirectory: boolean;
-  openFlg: boolean;
-  possessionFiles: IPossessionFiles[];
+  dir: string;  // ディレクトリ
+  name: string; // ファイル名
+  depth: number; // ワークスペースからの階層No
+  isDirectory: boolean; // ディレクトリフラグ
+  openFlg: boolean;  // ディレクトリ時のオープンフラング
+  possessionFiles: IPossessionFiles[];  // 所持しているファイル一覧
 }
 
 class PossessionFiles implements IPossessionFiles {

@@ -1,0 +1,9 @@
+.open-workspace{
+  line-height: 3;
+  color: #2064c8;
+  margin-left: 10px;
+  cursor: pointer;
+  &:hover {
+    border-bottom: solid 1px white;
+  }
+}

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ElectronDialogService } from '../../service/electron-dialog.service';
+import { ActiveFileManagerService } from '../../service/active-file-manager.service';
 
 @Component({
   selector: 'app-menu',
@@ -8,12 +9,16 @@ import { ElectronDialogService } from '../../service/electron-dialog.service';
 })
 export class MenuComponent implements OnInit {
 
-  constructor(private ed: ElectronDialogService) { }
+  constructor(private ed: ElectronDialogService , private afs :ActiveFileManagerService) { }
 
   ngOnInit() {
   }
 
   open() {
     this.ed.setWorkSpace();
+  }
+
+  debug() {
+    this.ed.showFileSaveDialog(this.afs.getActiveFile());
   }
 }

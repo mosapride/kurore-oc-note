@@ -1,3 +1,4 @@
+import { IPossessionFiles } from './file-tree.service';
 /* -------------------------------------------------------------------------------
  * エレクトロンダイアログサービス.
  *
@@ -7,6 +8,7 @@
 import { FileTreeService } from './file-tree.service';
 import { ElectronService } from './../core/services/electron/electron.service';
 import { Injectable } from '@angular/core';
+import { MessageBoxSyncOptions } from 'electron';
 
 @Injectable({
   providedIn: 'root'
@@ -36,5 +38,37 @@ export class ElectronDialogService {
           this.fts.setTreeRoot(folders.filePaths[0]);
         }
       });
+  }
+
+  showFileSaveDialog(file: IPossessionFiles) {
+    if (!file) {
+      return;
+    }
+    const option = new class implements MessageBoxSyncOptions {
+      type?: string;
+      buttons = ["Save", "Don't Save", "Cancel"];
+      defaultId?: number;
+      title = `OC Note`;
+      message = `Do you want to save the changes made to "${file.name}" ?`;
+      detail?: string;
+      checkboxLabel?: string;
+      checkboxChecked?: boolean;
+      icon = 'info';
+      cancelId?: number;
+      noLink?: boolean;
+      normalizeAccessKeys?: boolean;
+    };
+    const rest = this.dialog.showMessageBoxSync(this.es.remote.getCurrentWindow(), option);
+
+    console.log(`rest = ${rest}`);
+    switch (rest) {
+      case 0:  // Save
+        console.log(1);
+        break;
+      case 1:  // 変更を破棄
+        break;
+      case 2:  // 動作をキャンセル
+        break;
+    }
   }
 }

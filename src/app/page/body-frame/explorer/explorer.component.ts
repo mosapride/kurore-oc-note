@@ -11,7 +11,7 @@ export class ExplorerComponent implements AfterContentInit {
   iTreeWorkSpace: ITreeWorkSpace;
   constructor(private ed: ElectronDialogService, private fileTreeService: FileTreeService) { }
 
-  debug() {
+  open() {
     this.ed.setWorkSpace();
   }
 

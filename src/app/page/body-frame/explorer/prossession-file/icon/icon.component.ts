@@ -38,8 +38,8 @@ export class IconComponent implements OnInit {
 
   ngOnInit(): void {
     this.el.nativeElement.style.display = 'inline-block';
-    this.el.nativeElement.style.width = '25px';
-    this.el.nativeElement.style.height = '25px';
+    this.el.nativeElement.style.width = '18px';
+    this.el.nativeElement.style.height = '18px';
     this.el.nativeElement.style.backgroundSize = 'cover';
     this.el.nativeElement.style.filter = 'contrast(100%)';
     this.el.nativeElement.style.verticalAlign = 'middle';

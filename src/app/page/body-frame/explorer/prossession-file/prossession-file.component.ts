@@ -1,3 +1,4 @@
+import { ActiveFileManagerService } from './../../../../service/active-file-manager.service';
 import { Component, OnInit, Input } from '@angular/core';
 import { IPossessionFiles } from '../../../../service/file-tree.service';
 
@@ -9,17 +10,17 @@ import { IPossessionFiles } from '../../../../service/file-tree.service';
 export class ProssessionFileComponent implements OnInit {
 
   @Input() file: IPossessionFiles;
-  constructor() { }
+  constructor(private afm: ActiveFileManagerService) { }
 
   ngOnInit() {
   }
 
 
-  clickEvent(file : IPossessionFiles) {
-    console.log(file);
+  clickEvent(file: IPossessionFiles) {
     if (file.isDirectory) {
       file.openFlg = !file.openFlg;
     }
-    console.log(file.openFlg);
+
+    this.afm.setActiveFile(file);
   }
 }

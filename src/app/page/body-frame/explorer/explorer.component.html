@@ -1,3 +1,7 @@
+<ng-container *ngIf="!iTreeWorkSpace">
+  <span class="open-workspace" (click)="open()">Open WorkSpace</span>
+</ng-container>
+
 <ng-container *ngIf="iTreeWorkSpace">
    <ng-container *ngFor="let file of iTreeWorkSpace.possessionFiles">
      <app-prossession-file [file]="file" ></app-prossession-file>
