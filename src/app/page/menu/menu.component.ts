@@ -19,6 +19,6 @@ export class MenuComponent implements OnInit {
   }
 
   debug() {
-    this.ed.showFileSaveDialog(this.afs.getActiveFile());
+    this.ed.showFileSaveDialog(this.afs.getActiveMd());
   }
 }

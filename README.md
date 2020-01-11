@@ -34,4 +34,6 @@ Licensed under the MIT license.
 
 ## Acknowledgements
 
+* https://github.com/microsoft/vscode
 * https://github.com/vscode-icons/vscode-icons
+* https://github.com/edihbrandon/RictyDiminished

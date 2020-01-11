@@ -1,3 +1,4 @@
+import { SAVE_DIALOG } from './electron-dialog.service';
 /* --------------------------------------------------------------------
  * Activeファイル管理サービス.
  *
@@ -7,6 +8,9 @@
 import { Injectable } from '@angular/core';
 import { IPossessionFiles } from './file-tree.service';
 import { Subject } from 'rxjs';
+import { ElectronDialogService } from './electron-dialog.service';
+import { ElectronService } from '../core/services';
+import { sep } from 'path';
 
 
 @Injectable({
@@ -14,22 +18,45 @@ import { Subject } from 'rxjs';
 })
 export class ActiveFileManagerService {
   // ファイル内容変更フラグ
-  contentChangeFlg = false;
-  possessionFiles: IPossessionFiles;
+  activeContentChangeFlg = false;
+  // ファイル
+  activePossesionFiles: IPossessionFiles;
+  // markdownデータ内容
+  markdownContents: string;
+  $markdownContentsSubject: Subject<string>;
   $activeFileSubject: Subject<IPossessionFiles>;
-  constructor() {
+
+
+  constructor(private dialog: ElectronDialogService, private es: ElectronService) {
     this.$activeFileSubject = new Subject<IPossessionFiles>();
+    this.$markdownContentsSubject = new Subject<string>();
   }
 
 
-  setActiveFile(file: IPossessionFiles): void {
-    this.possessionFiles = file;
-    this.contentChangeFlg = false;
-    this.activeFileSubjectNext();
+  setActiveMd(file: IPossessionFiles): void {
+    if (this.compareActiveFile(file)) {
+      return;
+    }
+
+    if (this.activeContentChangeFlg) {
+      const res = this.dialog.showFileSaveDialog(file);
+      switch (res) {
+        case SAVE_DIALOG.save:
+          this.save(this.activePossesionFiles);
+        case SAVE_DIALOG.not_save:
+          break;
+        case SAVE_DIALOG.cancel:
+          return;
+      }
+    }
+
+    this.activePossesionFiles = file;
+    this.activeContentChangeFlg = false;
+    this.$activeFileSubject.next(this.activePossesionFiles);
   }
 
-  getActiveFile(): IPossessionFiles {
-    return this.possessionFiles;
+  getActiveMd(): IPossessionFiles {
+    return this.activePossesionFiles;
   }
 
   /**
@@ -37,8 +64,10 @@ export class ActiveFileManagerService {
    *
    * @memberof ActiveFileManagerService
    */
-  setContentChange() {
-    this.contentChangeFlg = true;
+  setMdContentChange(markdownContents: string) {
+    this.markdownContents = markdownContents;
+    this.activeContentChangeFlg = true;
+    this.$markdownContentsSubject.next(this.markdownContents);
   }
 
   /**
@@ -47,8 +76,8 @@ export class ActiveFileManagerService {
    * @returns {boolean} true=変更、false=未変更.
    * @memberof ActiveFileManagerService
    */
-  isContentChanged(): boolean {
-    return this.contentChangeFlg;
+  isMdContentChanged(): boolean {
+    return this.activeContentChangeFlg;
   }
 
 
@@ -60,13 +89,26 @@ export class ActiveFileManagerService {
    * @memberof ActiveFileManagerService
    */
   compareActiveFile(file: IPossessionFiles): boolean {
-    if (this.possessionFiles.dir === file.dir && this.possessionFiles.name === file.name) {
+    if (!this.activePossesionFiles) {
+      return false;
+    }
+    if (this.activePossesionFiles.dir === file.dir && this.activePossesionFiles.name === file.name) {
       return true;
     }
     return false;
   }
 
-  private activeFileSubjectNext(): void {
-    this.$activeFileSubject.next(this.possessionFiles);
+
+  save(file: IPossessionFiles, text?: string) {
+    if (text) {
+      this.es.fs.writeFileSync(file.dir + sep + file.name, text);
+    } else {
+      this.es.fs.writeFileSync(file.dir + sep + file.name, this.markdownContents);
+    }
   }
+
+  readFileMd(file: IPossessionFiles): string {
+    return this.es.fs.readFileSync(file.dir + sep + file.name, { encoding: 'utf8' });
+  }
+
 }

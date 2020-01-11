@@ -1,4 +1,4 @@
-<div class="item" [style.padding-left]="((file.depth - 1) * 10) + 5 + 'px'" (click)="clickEvent(file)">
+<div class="item" [style.padding-left]="((file.depth - 1) * 10) + 5 + 'px'" (click)="clickEvent(file)" [ngClass]="{'active': isActive(file)}">
   <app-icon [isDirectory]="file.isDirectory" [openFlg]="file.openFlg" [name]="file.name"></app-icon>
   {{file.name}}
 </div>

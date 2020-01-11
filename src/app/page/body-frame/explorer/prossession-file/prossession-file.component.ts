@@ -21,6 +21,12 @@ export class ProssessionFileComponent implements OnInit {
       file.openFlg = !file.openFlg;
     }
 
-    this.afm.setActiveFile(file);
+    if (file.name.match(/\.md$/)) {
+      this.afm.setActiveMd(file);
+    }
+  }
+
+  isActive(file: IPossessionFiles) {
+    return this.afm.compareActiveFile(file);
   }
 }

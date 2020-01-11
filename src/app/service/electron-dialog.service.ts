@@ -10,6 +10,12 @@ import { ElectronService } from './../core/services/electron/electron.service';
 import { Injectable } from '@angular/core';
 import { MessageBoxSyncOptions } from 'electron';
 
+export enum SAVE_DIALOG {
+  save,
+  not_save,
+  cancel
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -40,9 +46,9 @@ export class ElectronDialogService {
       });
   }
 
-  showFileSaveDialog(file: IPossessionFiles) {
+  showFileSaveDialog(file: IPossessionFiles): SAVE_DIALOG {
     if (!file) {
-      return;
+      return SAVE_DIALOG.cancel;
     }
     const option = new class implements MessageBoxSyncOptions {
       type?: string;
@@ -63,12 +69,10 @@ export class ElectronDialogService {
     console.log(`rest = ${rest}`);
     switch (rest) {
       case 0:  // Save
-        console.log(1);
-        break;
+        return SAVE_DIALOG.save
       case 1:  // 変更を破棄
-        break;
-      case 2:  // 動作をキャンセル
-        break;
+        return SAVE_DIALOG.not_save
     }
+    return SAVE_DIALOG.cancel;
   }
 }
