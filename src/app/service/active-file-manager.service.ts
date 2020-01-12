@@ -39,7 +39,7 @@ export class ActiveFileManagerService {
     }
 
     if (this.activeContentChangeFlg) {
-      const res = this.dialog.showFileSaveDialog(file);
+      const res = this.dialog.showFileSaveDialog(this.activePossesionFiles);
       switch (res) {
         case SAVE_DIALOG.save:
           this.save(this.activePossesionFiles);
@@ -64,9 +64,9 @@ export class ActiveFileManagerService {
    *
    * @memberof ActiveFileManagerService
    */
-  setMdContentChange(markdownContents: string) {
+  setMdContentChange(markdownContents: string, initFlg = false) {
     this.markdownContents = markdownContents;
-    this.activeContentChangeFlg = true;
+    this.activeContentChangeFlg = !initFlg;
     this.$markdownContentsSubject.next(this.markdownContents);
   }
 
@@ -98,7 +98,6 @@ export class ActiveFileManagerService {
     return false;
   }
 
-
   save(file: IPossessionFiles, text?: string) {
     if (text) {
       this.es.fs.writeFileSync(file.dir + sep + file.name, text);
@@ -107,8 +106,19 @@ export class ActiveFileManagerService {
     }
   }
 
+  ctrlS(text: string) {
+    if (this.activePossesionFiles) {
+      this.save(this.activePossesionFiles, text);
+      this.activeContentChangeFlg = false;
+    }
+  }
+
   readFileMd(file: IPossessionFiles): string {
     return this.es.fs.readFileSync(file.dir + sep + file.name, { encoding: 'utf8' });
+  }
+
+  getPath() {
+    return this.activePossesionFiles.dir;
   }
 
 }

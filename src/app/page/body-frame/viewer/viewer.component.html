@@ -1,1 +1,3 @@
-<p>viewer works!</p>
+<div #contents class="contents" [innerHTML]='html | noSanitize'  (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)" (drop)="onDrop($event)">
+  <!-- (contextmenu)="rightClickOnDirectory()" -->
+</div>

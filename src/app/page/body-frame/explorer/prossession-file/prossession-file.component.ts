@@ -10,7 +10,7 @@ import { IPossessionFiles } from '../../../../service/file-tree.service';
 export class ProssessionFileComponent implements OnInit {
 
   @Input() file: IPossessionFiles;
-  constructor(private afm: ActiveFileManagerService) { }
+  constructor(private activeFileManagerService: ActiveFileManagerService) { }
 
   ngOnInit() {
   }
@@ -22,11 +22,11 @@ export class ProssessionFileComponent implements OnInit {
     }
 
     if (file.name.match(/\.md$/)) {
-      this.afm.setActiveMd(file);
+      this.activeFileManagerService.setActiveMd(file);
     }
   }
 
   isActive(file: IPossessionFiles) {
-    return this.afm.compareActiveFile(file);
+    return this.activeFileManagerService.compareActiveFile(file);
   }
 }

@@ -52,6 +52,11 @@ body {
   font-family: Consolas, Menlo, Monaco, "Droid Sans Mono", "Courier New", monospace, ;
 }
 
+.hljs {
+  border: 1px solid #555;
+  margin-bottom: 10px;
+}
+
 
 /*スクロールバー全体*/
 ::-webkit-scrollbar {

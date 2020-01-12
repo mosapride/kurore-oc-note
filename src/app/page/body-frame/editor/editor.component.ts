@@ -15,9 +15,9 @@ declare var CodeMirror: typeof codetype;
 export class EditorComponent implements AfterContentInit {
   @ViewChild('codemirror', { static: true }) codemirror: ElementRef;
   codeInstance: codetype.EditorFromTextArea;
-  markdownContents = ''; // markdownファイルの内容
   viewFileName = '';
   changeFlg = false;
+  timeoutInstance: NodeJS.Timer = null;
 
   constructor(public es: ElectronService, private activeFileManagerService: ActiveFileManagerService) { }
 
@@ -38,40 +38,50 @@ export class EditorComponent implements AfterContentInit {
       mode: 'markdown',
       lineNumbers: true,
       lineWrapping: false,
-      value: this.markdownContents,
-      // theme: this.selectedCodemirrortheme,
-      viewportMargin: Infinity,
+      value: ``,
+      viewportMargin: 10,
       extraKeys: {
         'Enter': 'newlineAndIndentContinueMarkdownList',
         'Ctrl-S': () => this.save()
       },
     });
     this.codeInstance.setSize('100%', '100%');
+    this.codeInstance.on('change', (ins: codetype.Editor, changeObj: codetype.EditorChangeLinkedList) => this.onChangeTextArea(ins, changeObj));
   }
 
   initSubject() {
-    console.log(`initSubject`);
-
-    this.activeFileManagerService.$activeFileSubject.asObservable().subscribe(pross  => {
-      console.log(`initSubject subscribe`);
+    this.activeFileManagerService.$activeFileSubject.asObservable().subscribe(pross => {
+      const markdownContents = this.activeFileManagerService.readFileMd(pross);
       this.codeInstance.getDoc().clearHistory();
-      this.markdownContents = this.activeFileManagerService.readFileMd(pross);
-      this.codeInstance.setValue(this.markdownContents);
+      this.codeInstance.setValue(markdownContents);
+      this.activeFileManagerService.setMdContentChange(this.codeInstance.getValue(), true);
       this.viewFileName = pross.name;
     });
-
-    // this.activeFileManagerService.$activeFileSubject.subscribe(d => {
-    //   console.log(`initSubject subscribe`);
-    //   this.codeInstance.getDoc().clearHistory();
-    //   this.markdownContents = this.activeFileManagerService.readFileMd(d);
-    //   this.codeInstance.setValue(this.markdownContents);
-    // });
   }
 
 
 
   private save() {
+    this.activeFileManagerService.ctrlS(this.codeInstance.getValue());
+  }
 
+  /**
+   * makdownが変更された場合、viewerに反映させるために通知を出す.
+   *
+   * @private
+   * @memberof MarkdownComponent
+   */
+  private onChangeTextArea(ins: codetype.Editor, changeObj: codetype.EditorChangeLinkedList): void {
+    if (this.timeoutInstance !== null) {
+      clearInterval(this.timeoutInstance);
+      this.timeoutInstance = null;
+    }
+    this.timeoutInstance = setTimeout(() => {
+      if (changeObj.origin !== 'setValue') {
+        this.activeFileManagerService.setMdContentChange(this.codeInstance.getValue());
+      }
+      this.timeoutInstance = null;
+    }, 200);
   }
 
 }
