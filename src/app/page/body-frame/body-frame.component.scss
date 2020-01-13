@@ -51,10 +51,7 @@ app-menu {
     bottom: 0;
     right: 0;
     background-color: #9BADCB;
-    overflow: hidden;
-    &:hover {
-      overflow: auto;
-    }
+    overflow : auto;
     border: solid 1px #444
   }
 
