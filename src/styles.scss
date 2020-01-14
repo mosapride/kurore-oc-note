@@ -58,6 +58,7 @@ body {
 }
 
 
+
 /*スクロールバー全体*/
 ::-webkit-scrollbar {
   width: 10px;
@@ -97,4 +98,16 @@ body {
   line-height: 1.2em;
   height: 3.6em;
   font-size: 14px;
+}
+
+#viewer {
+  .external-link {
+    &::after {
+      content: "[↗]";
+    }
+  }
+
+  .no-link {
+    color: #f14c4c;
+  }
 }

@@ -75,4 +75,36 @@ export class ElectronDialogService {
     }
     return SAVE_DIALOG.cancel;
   }
+
+
+  /**
+   * フォルダ・ファイル作成確認ダイアログ
+   *
+   * @param {string} makeFileName
+   * @returns {boolean}
+   * @memberof ElectronDialogService
+   */
+  makeFileOrDirectoryDialog(makeFileName: string): boolean {
+    const option = new class implements MessageBoxSyncOptions {
+      type?: string;
+      buttons = ["OK", "Cancel"];
+      defaultId?: number;
+      title = `OC Note`;
+      message = `Create Directory/File "${makeFileName}" ?`;
+      detail?: string;
+      checkboxLabel?: string;
+      checkboxChecked?: boolean;
+      icon = 'info';
+      cancelId?: number;
+      noLink?: boolean;
+      normalizeAccessKeys?: boolean;
+    };
+    const rest = this.dialog.showMessageBoxSync(this.es.remote.getCurrentWindow(), option);
+
+    switch (rest) {
+      case 0:
+        return true;
+    }
+    return false;
+  }
 }

@@ -1,6 +1,8 @@
+import { FileTreeService } from './../../../service/file-tree.service';
+import { FileManagerService, EStatType } from './../../../service/file-manager.service';
 import { ElectronService } from './../../../core/services/electron/electron.service';
 import { ActiveFileManagerService } from './../../../service/active-file-manager.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import * as hljs from 'highlight.js';
 import * as marked from 'marked';
 import { sep } from 'path';
@@ -14,7 +16,9 @@ export class ViewerComponent implements OnInit {
   html = '';  // 画面に表示するMarkdownからHTMLに変換した文字列
   constructor(
     private electronService: ElectronService,
-    private activeFileManagerService: ActiveFileManagerService
+    private activeFileManagerService: ActiveFileManagerService,
+    private fileManagerService: FileManagerService,
+    private fileTreeService: FileTreeService
   ) { }
 
   ngOnInit() {
@@ -23,6 +27,54 @@ export class ViewerComponent implements OnInit {
       this.html = marked(data, new MarketOption(this.electronService, this.activeFileManagerService).getOption());
     });
   }
+
+
+  /**
+   * Viewerのclickイベント.
+   *
+   * * 内部linkの実装
+   *
+   * 内部リンクに関しては通常通りの通さを行うとパスがexe-rootからになり使用しにくくなる。
+   * また、もしパスが合ってたとしてもアプリ全体がその指定されたページになり、仕様どおりの動作にならないため内部リンクをキャッチする。
+   *
+   * @param {*} event
+   * @returns
+   * @memberof ViewerComponent
+   */
+  @HostListener('click', ['$event']) onclick(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    console.log(`click`);
+    let href = '';
+    try {
+      href = event.target.dataset.inlink;
+      // 内部リンクではない場合(外部リンクの場合)、OSのファイルオープンを行う
+      if (!href) {
+        href = event.target.dataset.outerlink;
+        this.electronService.shell.openExternal(href);
+        return;
+      }
+      href = href.replace(/\//g, sep);
+      href = this.activeFileManagerService.getPath() + sep + href;
+      // ファイルが存在しない場合。
+      if (this.fileManagerService.getStatType(href) === EStatType.not_found) {
+        this.activeFileManagerService.makeDirFile(href);
+        return;
+      }
+      if (!href.match(/\.md$/)) {
+        this.electronService.shell.openItem(href);
+        return;
+      } else {
+        const poss = this.fileTreeService.getPossessionFiles(href)
+        if (poss) {
+          this.activeFileManagerService.setActiveMd(poss);
+        }
+      }
+    } catch (e) {
+      return;
+    }
+  }
+
 
   onDragOver(evt: DragEvent) {
     console.log(evt);
@@ -102,7 +154,10 @@ class MarketOption {
       }
 
       // アプリケーションリンクの存在有無
-      if (!this.electronService.fs.statSync(markfile)) {
+
+      try {
+        this.electronService.fs.statSync(markfile);
+      } catch {
         cssClazzName += ' no-link';
       }
       // markdown内のlinkから、markdownファイルへのリンクまたはアプリケーションのリンクとして返す。
@@ -110,7 +165,7 @@ class MarketOption {
     };
   }
 
-  private addRenderImage(render : marked.Renderer) {
+  private addRenderImage(render: marked.Renderer) {
     render.image = (href: string, title: string, text: string): string => {
       let optionCode = '';
 

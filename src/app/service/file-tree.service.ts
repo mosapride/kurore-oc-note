@@ -4,7 +4,7 @@
  * エクスプロラーに必要なディレクトリ・ファイルツリー情報を管理する
  * -------------------------------------------------------------------------------*/
 
-import { sep } from 'path';
+import { sep, win32, dirname, normalize } from 'path';
 import { Injectable } from '@angular/core';
 import { ElectronService } from '../core/services';
 import { FSWatcher } from 'fs';
@@ -65,6 +65,34 @@ export class FileTreeService {
   constructor(private es: ElectronService) {
     this.prcFS = new PrcFS(this.es);
     this.$iTreeWorkSpaceSubject = new Subject<ITreeWorkSpace>();
+  }
+
+
+  /**
+   * フルパスからPossessionFilesを取得する。
+   *
+   * @param {string} href markdownまでのフルパス
+   * @returns {PossessionFiles}
+   * @memberof FileTreeService
+   */
+  getPossessionFiles(href: string): PossessionFiles {
+    const dir = normalize(dirname(href));
+    let name = win32.basename(href);
+    return this.search(dir, name, this.treeWorkSpace.possessionFiles);
+  }
+
+  private search(dir: string, name: string, possessionFiles: PossessionFiles[]): IPossessionFiles | undefined {
+    for (let p of possessionFiles) {
+      if (p.dir === dir && p.name === name) {
+        return p;
+      }
+
+      let rtn = this.search(dir, name, p.possessionFiles);
+      if (rtn !== undefined) {
+        return rtn;
+      }
+    }
+    return undefined;
   }
 
   /**

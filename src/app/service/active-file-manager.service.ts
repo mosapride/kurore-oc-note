@@ -1,3 +1,4 @@
+import { FileManagerService } from './file-manager.service';
 import { SAVE_DIALOG } from './electron-dialog.service';
 /* --------------------------------------------------------------------
  * Activeファイル管理サービス.
@@ -27,11 +28,14 @@ export class ActiveFileManagerService {
   $activeFileSubject: Subject<IPossessionFiles>;
 
 
-  constructor(private dialog: ElectronDialogService, private es: ElectronService) {
+  constructor(
+    private dialog: ElectronDialogService,
+    private es: ElectronService,
+    private fileManagerService: FileManagerService
+  ) {
     this.$activeFileSubject = new Subject<IPossessionFiles>();
     this.$markdownContentsSubject = new Subject<string>();
   }
-
 
   setActiveMd(file: IPossessionFiles): void {
     if (this.compareActiveFile(file)) {
@@ -54,6 +58,7 @@ export class ActiveFileManagerService {
     this.activeContentChangeFlg = false;
     this.$activeFileSubject.next(this.activePossesionFiles);
   }
+
 
   getActiveMd(): IPossessionFiles {
     return this.activePossesionFiles;
@@ -100,12 +105,18 @@ export class ActiveFileManagerService {
 
   save(file: IPossessionFiles, text?: string) {
     if (text) {
-      this.es.fs.writeFileSync(file.dir + sep + file.name, text);
+      this.fileManagerService.writeMarkDownSync(file.dir + sep + file.name, text);
     } else {
-      this.es.fs.writeFileSync(file.dir + sep + file.name, this.markdownContents);
+      this.fileManagerService.writeMarkDownSync(file.dir + sep + file.name, this.markdownContents);
     }
   }
 
+  /**
+   * 現在アクティブなファイルに対して保存を行う。
+   *
+   * @param {string} text 保存内容
+   * @memberof ActiveFileManagerService
+   */
   ctrlS(text: string) {
     if (this.activePossesionFiles) {
       this.save(this.activePossesionFiles, text);
@@ -113,12 +124,57 @@ export class ActiveFileManagerService {
     }
   }
 
+  /**
+   * markdownファイルを読み込む
+   *
+   * @param {IPossessionFiles} file
+   * @returns {string} Markdown内容
+   * @memberof ActiveFileManagerService
+   */
   readFileMd(file: IPossessionFiles): string {
-    return this.es.fs.readFileSync(file.dir + sep + file.name, { encoding: 'utf8' });
+    return this.fileManagerService.readMarkdownSync(file.dir + sep + file.name);
   }
 
+  /**
+   * アクティブなディレクトリパスを返す。
+   *
+   * @returns パス
+   * @memberof ActiveFileManagerService
+   */
   getPath() {
     return this.activePossesionFiles.dir;
+  }
+
+  makeDirFile(path: string) {
+    const sPath = path.split(sep);
+    let checkPath = '';
+    for (const s of sPath) {
+      checkPath += s;
+      let checkFlg = false;
+      try {
+        const c = this.es.fs.statSync(checkPath);
+        if (c.isFile()) {
+          checkFlg = true;
+        } else if (c.isDirectory()) {
+          checkFlg = true;
+        } else {
+          checkFlg = false;
+        }
+      } catch {
+        checkFlg = false;
+      }
+      if (checkFlg === false) {
+
+        if (this.dialog.makeFileOrDirectoryDialog(checkPath)) {
+          if (checkPath.match(/\.md$/)) {
+            this.es.fs.closeSync(this.es.fs.openSync(checkPath, 'w'));
+          } else {
+            this.es.fs.mkdir(checkPath, (err) => console.log(err));
+          }
+        }
+      }
+      checkPath += sep;
+    }
   }
 
 }
