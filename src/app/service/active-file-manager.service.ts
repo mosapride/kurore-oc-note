@@ -82,7 +82,10 @@ export class ActiveFileManagerService {
    * @memberof ActiveFileManagerService
    */
   isMdContentChanged(): boolean {
-    return this.activeContentChangeFlg;
+    if (this.activePossesionFiles) {
+      return this.activeContentChangeFlg;
+    }
+    return false;
   }
 
 
