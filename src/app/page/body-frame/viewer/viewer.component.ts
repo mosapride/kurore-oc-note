@@ -13,6 +13,7 @@ import { sep } from 'path';
   styleUrls: ['./viewer.component.scss']
 })
 export class ViewerComponent implements OnInit {
+  data = '';
   html = '';  // 画面に表示するMarkdownからHTMLに変換した文字列
   constructor(
     private electronService: ElectronService,
@@ -23,8 +24,8 @@ export class ViewerComponent implements OnInit {
 
   ngOnInit() {
     this.activeFileManagerService.$markdownContentsSubject.asObservable().subscribe(data => {
-      // this.html = data;
-      this.html = marked(data, new MarketOption(this.electronService, this.activeFileManagerService).getOption());
+      this.data = data;
+      this.html = marked(data, new MarketOption(this.activeFileManagerService, this.fileManagerService).getOption());
     });
   }
 
@@ -58,7 +59,10 @@ export class ViewerComponent implements OnInit {
       href = this.activeFileManagerService.getPath() + sep + href;
       // ファイルが存在しない場合。
       if (this.fileManagerService.getStatType(href) === EStatType.not_found) {
+        console.log('make file');
         this.activeFileManagerService.makeDirFile(href);
+        console.log('reload file');
+        this.html = marked(this.data, new MarketOption(this.activeFileManagerService, this.fileManagerService).getOption());
         return;
       }
       if (!href.match(/\.md$/)) {
@@ -98,7 +102,10 @@ export class ViewerComponent implements OnInit {
 
 
 class MarketOption {
-  constructor(private electronService: ElectronService, private activeFileManagerService: ActiveFileManagerService) {
+  constructor(
+    private activeFileManagerService: ActiveFileManagerService,
+    private fileManagerService: FileManagerService,
+  ) {
   }
   getOption(): marked.MarkedOptions {
     const option = this.highlightOption();
@@ -140,28 +147,21 @@ class MarketOption {
   private addRenderLink(render: marked.Renderer) {
     render.link = (href: string, title: string, text: string): string => {
 
-      // ブラウザへのlink
-      if (href.match(/^http/) || href.match('//')) {
-        return `<a href="javascript:void(0)" title="${href}" alt="${href}" data-outerLink="${href}" target="_blank" class="external-link" title="${title}">${text}</a>`;
-      }
-      let cssClazzName = 'internal-link';
       let markfile = href.replace(/\//g, sep);
       markfile = this.activeFileManagerService.getPath() + sep + markfile;
 
-      // markdown以外のアプリケーションリンク
-      if (!markfile.match(/\.md$/)) {
-        cssClazzName += ' external-app';
+      // markdownファイルの場合
+      if (markfile.match(/\.md$/)) {
+        if (this.fileManagerService.isStatSync(markfile)) {
+          console.log(markfile);
+          // markdown内のlinkから、markdownファイルへのリンクまたはアプリケーションのリンクとして返す。
+          return `<a href="javascript:void(0)" title="${href}" alt="${href}" data-inLink="${href}" >${text}</a>`;
+        } else {
+          return `<a href="javascript:void(0)" title="${href}" alt="${href}" data-inLink="${href}" class="no-link">${text}</a>`;
+        }
+      } else {
+        return `<a href="javascript:void(0)" title="${href}" alt="${href}" data-outerLink="${href}" target="_blank" class="external-link" title="${title}">${text}</a>`;
       }
-
-      // アプリケーションリンクの存在有無
-
-      try {
-        this.electronService.fs.statSync(markfile);
-      } catch {
-        cssClazzName += ' no-link';
-      }
-      // markdown内のlinkから、markdownファイルへのリンクまたはアプリケーションのリンクとして返す。
-      return `<a href="javascript:void(0)" title="${href}" alt="${href}" data-inLink="${href}" class="${cssClazzName}">${text}</a>`;
     };
   }
 

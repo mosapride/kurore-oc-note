@@ -149,6 +149,7 @@ export class ActiveFileManagerService {
   }
 
   makeDirFile(path: string) {
+    console.log(`makedir`);
     const sPath = path.split(sep);
     let checkPath = '';
     for (const s of sPath) {
@@ -174,6 +175,8 @@ export class ActiveFileManagerService {
           } else {
             this.es.fs.mkdir(checkPath, (err) => console.log(err));
           }
+        } else {
+          break;
         }
       }
       checkPath += sep;

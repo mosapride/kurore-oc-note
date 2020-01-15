@@ -103,9 +103,29 @@ body {
 #viewer {
   .external-link {
     &::after {
-      content: "[↗]";
+      content: "";
+      display: inline-block;
+      width : 25px;
+      margin-left :3px;
+      height : 25px;
+      vertical-align: middle;
+      background-image: url("/assets/icon/arrow.svg");
     }
   }
+
+  // .external-app {
+  //   &::after {
+  //     content: "";
+  //     display: inline-block;
+  //     width : 25px;
+  //     margin-left :3px;
+  //     height : 25px;
+  //     vertical-align: middle;
+  //     background-image: url("/assets/icon/flight_takeoff-24px.svg");
+  //   }
+  // }
+
+
 
   .no-link {
     color: #f14c4c;

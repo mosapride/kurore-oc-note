@@ -143,14 +143,11 @@ export class FileTreeService {
    * @memberof FileTreeService
    */
   private fsWatch$(tws: ITreeWorkSpace): void {
-    console.log(`fsWatcher init`);
     if (this.fsWatcher) {
       this.fsWatcher.close();
-
     }
 
     this.fsWatcher = this.es.fs.watch(tws.dir, { persistent: true, recursive: true }, (event, filename) => {
-      console.log(`fsWatcher go`);
       if (event === 'change') {
         if (filename !== 'style.css') {
           return;
