@@ -102,32 +102,41 @@ body {
 
 #viewer {
   .external-link {
+    // &::after {
+    //   content: "";
+    //   display: inline-block;
+    //   width : 25px;
+    //   margin-left :3px;
+    //   height : 25px;
+    //   vertical-align: middle;
+    //   background-image: url("/assets/icon/arrow.svg");
+    // }
+
     &::after {
-      content: "";
       display: inline-block;
-      width : 25px;
-      margin-left :3px;
-      height : 25px;
-      vertical-align: middle;
-      background-image: url("/assets/icon/arrow.svg");
+      position: absolute;
+      content: '⬈';
+      padding-left: 5px;
     }
   }
-
-  // .external-app {
-  //   &::after {
-  //     content: "";
-  //     display: inline-block;
-  //     width : 25px;
-  //     margin-left :3px;
-  //     height : 25px;
-  //     vertical-align: middle;
-  //     background-image: url("/assets/icon/flight_takeoff-24px.svg");
-  //   }
-  // }
-
-
 
   .no-link {
     color: #f14c4c;
   }
+}
+
+
+#lightboxOverlay {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  height: 100% !important;
+  width: 100% !important;
+}
+
+#lightbox {
+  position: fixed !important;
+  top: 50% !important;
+  transform: translateY(-50%);
+  max-width: 100%;
 }

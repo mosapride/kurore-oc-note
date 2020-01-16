@@ -42,16 +42,21 @@ export class ViewerComponent implements OnInit {
    * @returns
    * @memberof ViewerComponent
    */
-  @HostListener('click', ['$event']) onclick(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    console.log(`click`);
+  @HostListener('click', ['$event']) onclick(event:MouseEvent) {
+
+    console.log(event);
     let href = '';
     try {
-      href = event.target.dataset.inlink;
-      // 内部リンクではない場合(外部リンクの場合)、OSのファイルオープンを行う
+      href = event.target['dataset'].inlink;
+      // 内部リンクではない場合
       if (!href) {
-        href = event.target.dataset.outerlink;
+        href = event.target['dataset'].outerlink;
+        // 外部リンクでも無い場合(image)
+        if (!href) {
+          return;
+        }
+        event.preventDefault();
+        event.stopPropagation();
         this.electronService.shell.openExternal(href);
         return;
       }
@@ -66,6 +71,8 @@ export class ViewerComponent implements OnInit {
         return;
       }
       if (!href.match(/\.md$/)) {
+        event.preventDefault();
+        event.stopPropagation();
         this.electronService.shell.openItem(href);
         return;
       } else {
