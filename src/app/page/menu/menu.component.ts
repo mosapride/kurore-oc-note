@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ElectronDialogService } from '../../service/electron-dialog.service';
 import { ActiveFileManagerService } from '../../service/active-file-manager.service';
-import { FileTreeService } from '../../service/file-tree.service';
-import { SaveDataService, EJsonPropertySingleString } from '../../service/save-data.service';
 
 @Component({
   selector: 'app-menu',
@@ -16,6 +14,15 @@ export class MenuComponent {
     private activeFileManagerService: ActiveFileManagerService,
   ) { }
 
+  styleSave(): boolean {
+    return !this.activeFileManagerService.isMdContentChanged();
+  }
+
+  save() {
+    if (this.activeFileManagerService.isMdContentChanged()) {
+      this.activeFileManagerService.save();
+    }
+  }
 
   open() {
     this.electronDialogService.setWorkSpace();

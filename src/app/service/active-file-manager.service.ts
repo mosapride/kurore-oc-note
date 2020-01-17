@@ -106,12 +106,21 @@ export class ActiveFileManagerService {
     return false;
   }
 
-  save(file: IPossessionFiles, text?: string) {
-    if (text) {
-      this.fileManagerService.writeMarkDownSync(file.dir + sep + file.name, text);
-    } else {
-      this.fileManagerService.writeMarkDownSync(file.dir + sep + file.name, this.markdownContents);
+  save(file?: IPossessionFiles, text?: string) {
+    if (!this.isMdContentChanged()) {
+      return;
     }
+    let ip = this.activePossesionFiles;
+    if (typeof file !== 'undefined') {
+      ip = file;
+    }
+
+    if (typeof text === 'undefined') {
+      this.fileManagerService.writeMarkDownSync(ip.dir + sep + ip.name, this.markdownContents);
+    } else {
+      this.fileManagerService.writeMarkDownSync(ip.dir + sep + ip.name, text);
+    }
+    this.activeContentChangeFlg = false;
   }
 
   /**
@@ -121,10 +130,10 @@ export class ActiveFileManagerService {
    * @memberof ActiveFileManagerService
    */
   ctrlS(text: string) {
-    if (this.activePossesionFiles) {
-      this.save(this.activePossesionFiles, text);
-      this.activeContentChangeFlg = false;
+    if (!this.isMdContentChanged()) {
+      return;
     }
+    this.save(this.activePossesionFiles, text);
   }
 
   /**
