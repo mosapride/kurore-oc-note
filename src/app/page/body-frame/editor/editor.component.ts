@@ -1,6 +1,5 @@
-import { IPossessionFiles } from './../../../service/file-tree.service';
 import { ActiveFileManagerService } from './../../../service/active-file-manager.service';
-import { Component, AfterContentInit, ViewChild, ElementRef, Input } from '@angular/core';
+import { Component,  ViewChild, ElementRef, Input, OnInit } from '@angular/core';
 import * as codetype from 'codemirror';
 import { ElectronService } from '../../../core/services';
 
@@ -12,7 +11,8 @@ declare var CodeMirror: typeof codetype;
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.scss']
 })
-export class EditorComponent implements AfterContentInit {
+export class EditorComponent implements OnInit {
+
   @ViewChild('codemirror', { static: true }) codemirror: ElementRef;
   codeInstance: codetype.EditorFromTextArea;
   viewFileName = '';
@@ -28,7 +28,7 @@ export class EditorComponent implements AfterContentInit {
     return ``;
   }
 
-  ngAfterContentInit() {
+  ngOnInit(): void {
     this.initCodeMirror();
     this.initSubject();
   }

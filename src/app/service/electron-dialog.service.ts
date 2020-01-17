@@ -66,7 +66,6 @@ export class ElectronDialogService {
     };
     const rest = this.dialog.showMessageBoxSync(this.es.remote.getCurrentWindow(), option);
 
-    console.log(`rest = ${rest}`);
     switch (rest) {
       case 0:  // Save
         return SAVE_DIALOG.save

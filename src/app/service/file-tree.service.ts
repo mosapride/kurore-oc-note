@@ -1,3 +1,4 @@
+import { SaveDataService, EJsonPropertySingleString } from './save-data.service';
 /* -------------------------------------------------------------------------------
  * ファイルツリーサービス.
  *
@@ -62,8 +63,12 @@ export class FileTreeService {
   $iTreeWorkSpaceSubject: Subject<ITreeWorkSpace>;
   fsWatcher: FSWatcher;
   prcFS: PrcFS;
-  constructor(private es: ElectronService) {
-    this.prcFS = new PrcFS(this.es);
+
+  constructor(
+    private electronService: ElectronService,
+    private saveDataService: SaveDataService,
+  ) {
+    this.prcFS = new PrcFS(this.electronService);
     this.$iTreeWorkSpaceSubject = new Subject<ITreeWorkSpace>();
   }
 
@@ -111,6 +116,7 @@ export class FileTreeService {
       dir = '';
       possessionFiles = [];
     };
+    this.saveDataService.writeJsonPropatry(EJsonPropertySingleString.lastWorkSpaceName, dir);
     this.treeWorkSpace.dir = dir;
     this.parseFileTree(this.treeWorkSpace);
     this.fsWatch$(this.treeWorkSpace);
@@ -147,7 +153,7 @@ export class FileTreeService {
       this.fsWatcher.close();
     }
 
-    this.fsWatcher = this.es.fs.watch(tws.dir, { persistent: true, recursive: true }, (event, filename) => {
+    this.fsWatcher = this.electronService.fs.watch(tws.dir, { persistent: true, recursive: true }, (event, filename) => {
       if (event === 'change') {
         if (filename !== 'style.css') {
           return;

@@ -106,11 +106,11 @@ export class FileManagerService {
   /**
    * markdownファイルを読み込む
    *
-   * @param {*} path markdownファイルのフルパス
+   * @param {string} path markdownファイルのフルパス
    * @returns {string} markdownファイル内容(utf8)
    * @memberof FileManagerService
    */
-  readMarkdownSync(path): string {
+  readMarkdownSync(path: string): string {
     return this.electronService.fs.readFileSync(path, { encoding: 'utf8' });
   }
 
@@ -133,5 +133,28 @@ export class FileManagerService {
    */
   touchSync(path: string) {
     this.electronService.fs.closeSync(this.electronService.fs.openSync(path, 'w'));
+  }
+
+  /**
+   * ファイル読み込み.
+   *
+   * @param {string} path ファイル名を含めたフルパス
+   * @memberof FileManagerService
+   */
+  readFile(path: string): string {
+    return this.electronService.fs.readFileSync(path, { encoding: 'utf8' });
+  }
+
+
+  /**
+   * 設定ファイルのプロパティ、値の新規追加もしくは上書き行う。
+   *
+   * @param {string} property
+   * @param {string} value
+   */
+  writeJson(configFile : string, property: string, value: string) {
+    const obj = JSON.parse(this.readFile(configFile));
+    obj[property] = value;
+    this.electronService.fs.writeFileSync(configFile, JSON.stringify(obj), 'utf8');
   }
 }

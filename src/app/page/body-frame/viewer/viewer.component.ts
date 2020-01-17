@@ -44,7 +44,6 @@ export class ViewerComponent implements OnInit {
    */
   @HostListener('click', ['$event']) onclick(event:MouseEvent) {
 
-    console.log(event);
     let href = '';
     try {
       href = event.target['dataset'].inlink;
@@ -64,9 +63,7 @@ export class ViewerComponent implements OnInit {
       href = this.activeFileManagerService.getPath() + sep + href;
       // ファイルが存在しない場合。
       if (this.fileManagerService.getStatType(href) === EStatType.not_found) {
-        console.log('make file');
         this.activeFileManagerService.makeDirFile(href);
-        console.log('reload file');
         this.html = marked(this.data, new MarketOption(this.activeFileManagerService, this.fileManagerService).getOption());
         return;
       }
@@ -88,19 +85,16 @@ export class ViewerComponent implements OnInit {
 
 
   onDragOver(evt: DragEvent) {
-    console.log(evt);
     evt.preventDefault();
     evt.stopPropagation();
   }
 
   onDragLeave(evt: DragEvent) {
-    console.log(evt);
     evt.preventDefault();
     evt.stopPropagation();
   }
 
   onDrop(evt: DragEvent) {
-    console.log(evt);
     evt.preventDefault();
     evt.stopPropagation();
   }
@@ -160,7 +154,6 @@ class MarketOption {
       // markdownファイルの場合
       if (markfile.match(/\.md$/)) {
         if (this.fileManagerService.isStatSync(markfile)) {
-          console.log(markfile);
           // markdown内のlinkから、markdownファイルへのリンクまたはアプリケーションのリンクとして返す。
           return `<a href="javascript:void(0)" title="${href}" alt="${href}" data-inLink="${href}" >${text}</a>`;
         } else {
