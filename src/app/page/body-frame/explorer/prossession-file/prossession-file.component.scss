@@ -1,16 +1,28 @@
+@import "../../../../../variables";
+
 .item {
   position: relative;
+  display: block;
   white-space: nowrap;
   font-size: 14px;
   line-height: 27px;
   height: 27px;
   user-select: none;
   cursor: pointer;
+
   &:hover {
-    background-color: rgba(255,255,255,0.05);
+    background-color: rgba(255, 255, 255, 0.05);
   }
+
+  .item-name {
+    padding-left: 5px;
+    color: $PRI-FONT-COLOR;
+  }
+}
+a {
+  text-decoration: none;
 }
 
 .active {
-  background-color: rgba(255,255,255,0.1);
+  background-color: rgba(255, 255, 255, 0.1);
 }

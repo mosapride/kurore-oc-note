@@ -76,6 +76,7 @@ export class ViewerComponent implements OnInit {
         const poss = this.fileTreeService.getPossessionFiles(href)
         if (poss) {
           this.activeFileManagerService.setActiveMd(poss);
+          this.fileTreeService.openDirectory(poss);
         }
       }
     } catch (e) {

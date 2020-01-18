@@ -72,6 +72,28 @@ export class FileTreeService {
     this.$iTreeWorkSpaceSubject = new Subject<ITreeWorkSpace>();
   }
 
+  openDirectory(file: IPossessionFiles) {
+    const rep = (url: string): string => {
+      return normalize(url).replace(/\\|\//g, '');
+    }
+
+    let activeUrl = rep(file.dir);
+    let relop = (possessionFiles: PossessionFiles[]) => {
+      possessionFiles.filter(e => e.isDirectory === true).forEach(element => {
+        let regBase = rep(element.dir + sep + element.name);
+        let reg = RegExp(regBase + '.*');
+        if (reg.test(activeUrl)) {
+          element.openFlg = true;
+        }
+        if (element.possessionFiles.length >= 1) {
+          relop(element.possessionFiles);
+        }
+      });
+    }
+    relop(this.treeWorkSpace.possessionFiles);
+
+  }
+
 
   /**
    * フルパスからPossessionFilesを取得する。

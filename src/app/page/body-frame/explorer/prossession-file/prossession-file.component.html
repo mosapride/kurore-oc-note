@@ -1,8 +1,14 @@
-<div class="item" [style.padding-left]="((file.depth - 1) * 10) + 5 + 'px'" (click)="clickEvent(file)" [ngClass]="{'active': isActive(file)}">
-  <app-icon [isDirectory]="file.isDirectory" [openFlg]="file.openFlg" [name]="file.name"></app-icon>
-  {{file.name}}
-</div>
+<div>
+  <ng-container *ngIf="isImage()">
+    <a [href]="getImageHref()" [style.padding-left]="((file.depth - 1) * 10) + 5 + 'px'" [attr.data-lightbox]="file.name"  [ngClass]="{'active': isActive(file)}" class="item">
+      <app-icon [isDirectory]="file.isDirectory" [openFlg]="file.openFlg" [name]="file.name"></app-icon><span class="item-name">{{file.name}}</span></a>
+  </ng-container>
+  <ng-container *ngIf="!isImage()">
+    <div #item class="item" [style.padding-left]="((file.depth - 1) * 10) + 5 + 'px'" (click)="clickEvent(file , $event)" [ngClass]="{'active': isActive(file)}">
+      <app-icon [isDirectory]="file.isDirectory" [openFlg]="file.openFlg" [name]="file.name"></app-icon><span  class="item-name">{{file.name}}</span></div>
+  </ng-container>
 
+</div>
 <ng-container *ngIf="file.isDirectory && file.openFlg">
   <ng-container *ngFor="let item of file.possessionFiles">
     <app-prossession-file [file]="item"></app-prossession-file>

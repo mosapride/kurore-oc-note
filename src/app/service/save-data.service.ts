@@ -1,4 +1,3 @@
-import { FileTreeService } from './file-tree.service';
 import { FileManagerService } from './file-manager.service';
 import { ElectronService } from './../core/services/electron/electron.service';
 import { Injectable } from '@angular/core';

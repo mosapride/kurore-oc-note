@@ -1,5 +1,5 @@
 import { ActiveFileManagerService } from './../../../service/active-file-manager.service';
-import { Component,  ViewChild, ElementRef, Input, OnInit } from '@angular/core';
+import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import * as codetype from 'codemirror';
 import { ElectronService } from '../../../core/services';
 

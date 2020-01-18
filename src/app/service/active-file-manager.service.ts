@@ -30,7 +30,7 @@ export class ActiveFileManagerService {
 
   constructor(
     private dialog: ElectronDialogService,
-    private es: ElectronService,
+    private electronService: ElectronService,
     private fileManagerService: FileManagerService
   ) {
     this.$activeFileSubject = new Subject<IPossessionFiles>();
@@ -54,11 +54,12 @@ export class ActiveFileManagerService {
       }
     }
 
+
+
     this.activePossesionFiles = file;
     this.activeContentChangeFlg = false;
     this.$activeFileSubject.next(this.activePossesionFiles);
   }
-
 
   getActiveMd(): IPossessionFiles {
     return this.activePossesionFiles;
@@ -165,7 +166,7 @@ export class ActiveFileManagerService {
       checkPath += s;
       let checkFlg = false;
       try {
-        const c = this.es.fs.statSync(checkPath);
+        const c = this.electronService.fs.statSync(checkPath);
         if (c.isFile()) {
           checkFlg = true;
         } else if (c.isDirectory()) {
@@ -180,9 +181,9 @@ export class ActiveFileManagerService {
 
         if (this.dialog.makeFileOrDirectoryDialog(checkPath)) {
           if (checkPath.match(/\.md$/)) {
-            this.es.fs.closeSync(this.es.fs.openSync(checkPath, 'w'));
+            this.electronService.fs.closeSync(this.electronService.fs.openSync(checkPath, 'w'));
           } else {
-            this.es.fs.mkdir(checkPath, (err) => console.log(err));
+            this.electronService.fs.mkdir(checkPath, (err) => console.log(err));
           }
         } else {
           break;

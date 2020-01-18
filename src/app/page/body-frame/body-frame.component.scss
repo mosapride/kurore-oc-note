@@ -37,7 +37,7 @@ app-menu {
     position: fixed;
     top: $TOP_PX;
     bottom: 0;
-    background-color: #D197AB;
+    // background-color: #D197AB;
     overflow: hidden;
     &:hover {
       overflow: auto;
@@ -50,7 +50,7 @@ app-menu {
     top: $TOP_PX;
     bottom: 0;
     right: 0;
-    background-color: #9BADCB;
+    // background-color: #9BADCB;
     overflow : auto;
     border: solid 1px #444
   }

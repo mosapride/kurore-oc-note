@@ -17,12 +17,20 @@ export class ExplorerComponent implements AfterContentInit {
     private ed: ElectronDialogService,
     private fileTreeService: FileTreeService,
     private saveDataService: SaveDataService,
-    private fileManagerService : FileManagerService,
-    private activeFileManagerService : ActiveFileManagerService,
+    private fileManagerService: FileManagerService,
+    private activeFileManagerService: ActiveFileManagerService,
   ) { }
 
   open() {
     this.ed.setWorkSpace();
+  }
+
+  getDirName() {
+    if (typeof this.iTreeWorkSpace === 'undefined') {
+      return '';
+    }
+    let wkName = this.iTreeWorkSpace.dir.split(sep);
+    return wkName[wkName.length - 1];
   }
 
   ngAfterContentInit() {

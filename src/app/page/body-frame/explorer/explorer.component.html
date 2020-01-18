@@ -3,7 +3,10 @@
 </ng-container>
 
 <ng-container *ngIf="iTreeWorkSpace">
-   <ng-container *ngFor="let file of iTreeWorkSpace.possessionFiles">
-     <app-prossession-file [file]="file" ></app-prossession-file>
-   </ng-container>
+  <div class="submenu">
+    {{getDirName()}}
+  </div>
+  <ng-container *ngFor="let file of iTreeWorkSpace.possessionFiles">
+    <app-prossession-file [file]="file"></app-prossession-file>
+  </ng-container>
 </ng-container>
