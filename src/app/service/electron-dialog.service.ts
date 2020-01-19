@@ -9,6 +9,7 @@ import { FileTreeService } from './file-tree.service';
 import { ElectronService } from './../core/services/electron/electron.service';
 import { Injectable } from '@angular/core';
 import { MessageBoxSyncOptions } from 'electron';
+import { normalize } from 'path';
 
 export enum SAVE_DIALOG {
   save,
@@ -89,7 +90,7 @@ export class ElectronDialogService {
       buttons = ["OK", "Cancel"];
       defaultId?: number;
       title = `OC Note`;
-      message = `Create Directory/File "${makeFileName}" ?`;
+      message = `Create Directory/File \n"${normalize(makeFileName)}" ?`;
       detail?: string;
       checkboxLabel?: string;
       checkboxChecked?: boolean;
