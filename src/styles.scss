@@ -101,16 +101,8 @@ body {
 }
 
 #viewer {
+  padding-left : 5px;
   .external-link {
-    // &::after {
-    //   content: "";
-    //   display: inline-block;
-    //   width : 25px;
-    //   margin-left :3px;
-    //   height : 25px;
-    //   vertical-align: middle;
-    //   background-image: url("/assets/icon/arrow.svg");
-    // }
 
     &::after {
       display: inline-block;
