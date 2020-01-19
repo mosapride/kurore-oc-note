@@ -94,6 +94,21 @@ export class FileTreeService {
 
   }
 
+  allCloseDirectory() {
+    if (!this.treeWorkSpace) {
+      return;
+    }
+    const closer = (possessionFiles: PossessionFiles[]) => {
+      possessionFiles.filter(e => e.isDirectory === true).forEach(element =>{
+        element.openFlg = false;
+        if (element.possessionFiles.length >= 1) {
+          closer(element.possessionFiles);
+        }
+      });
+    }
+    closer(this.treeWorkSpace.possessionFiles);
+  }
+
 
   /**
    * フルパスからPossessionFilesを取得する。

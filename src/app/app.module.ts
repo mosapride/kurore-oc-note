@@ -27,6 +27,7 @@ import { MenuComponent } from './page/menu/menu.component';
 import { ProssessionFileComponent } from './page/body-frame/explorer/prossession-file/prossession-file.component';
 import { IconComponent } from "./page/body-frame/explorer/prossession-file/icon/icon.component";
 import { NoSanitizePipe } from './pipe/no-sanitize.pipe';
+import { DatePipe } from '@angular/common';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -51,7 +52,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     BrowserAnimationsModule,
     MatDialogModule,
   ],
-  providers: [],
+  providers: [DatePipe],
   bootstrap: [AppComponent],
   entryComponents: []
 })

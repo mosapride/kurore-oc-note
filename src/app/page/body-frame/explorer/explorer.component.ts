@@ -25,6 +25,10 @@ export class ExplorerComponent implements AfterContentInit {
     this.ed.setWorkSpace();
   }
 
+  close() {
+    this.fileTreeService.allCloseDirectory();
+  }
+
   getDirName() {
     if (typeof this.iTreeWorkSpace === 'undefined') {
       return '';

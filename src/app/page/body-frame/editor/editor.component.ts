@@ -2,6 +2,8 @@ import { ActiveFileManagerService } from './../../../service/active-file-manager
 import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import * as codetype from 'codemirror';
 import { ElectronService } from '../../../core/services';
+import { DatePipe } from '@angular/common';
+import { sep } from 'path';
 
 
 declare var CodeMirror: typeof codetype;
@@ -19,7 +21,11 @@ export class EditorComponent implements OnInit {
   changeFlg = false;
   timeoutInstance: NodeJS.Timer = null;
 
-  constructor(public es: ElectronService, private activeFileManagerService: ActiveFileManagerService) { }
+  constructor(
+    public electronService: ElectronService,
+    private activeFileManagerService: ActiveFileManagerService,
+    private datePipe: DatePipe,
+    ) { }
 
   getChangeFlg(): string {
     if (this.activeFileManagerService.isMdContentChanged()) {
@@ -42,11 +48,38 @@ export class EditorComponent implements OnInit {
       viewportMargin: 10,
       extraKeys: {
         'Enter': 'newlineAndIndentContinueMarkdownList',
-        'Ctrl-S': () => this.save()
+        'Ctrl-S': () => this.save(),
+
       },
     });
     this.codeInstance.setSize('100%', '100%');
     this.codeInstance.on('change', (ins: codetype.Editor, changeObj: codetype.EditorChangeLinkedList) => this.onChangeTextArea(ins, changeObj));
+    this.codeInstance.on('focus', (instance) => instance.refresh());
+    this.codeInstance.on('paste', (instance) => {
+      const ctype = this.electronService.clipboard.availableFormats();
+      console.log(ctype);
+      let rtnFlg = true;
+      for (const c of ctype) {
+        console.log(c);
+        if (c.match(/image/)) {
+          rtnFlg = false;
+          break;
+        }
+      }
+      if (rtnFlg) {
+        return;
+      }
+
+      if (typeof this.activeFileManagerService.getActiveMd() === 'undefined') {
+        return;
+      }
+      const imgName = this.datePipe.transform(new Date(), 'MMddhhmmss') + '.png';
+      this.electronService.fs.writeFile(this.activeFileManagerService.getPath() + sep + imgName, this.electronService.clipboard.readImage().toPNG(), () => {
+        // this.updateCodeMirror(instance, `![${imgName}](./${imgName})`);
+        this.codeInstance.getDoc().replaceSelection(`![${imgName}](./${imgName})`);
+        this.activeFileManagerService.setMdContentChange(this.codeInstance.getValue());
+      });
+    });
   }
 
   initSubject() {
