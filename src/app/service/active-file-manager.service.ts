@@ -37,6 +37,13 @@ export class ActiveFileManagerService {
     this.$markdownContentsSubject = new Subject<string>();
   }
 
+  /**
+   * 編集・表示するmarkdownファイル情報を設定する
+   *
+   * @param {IPossessionFiles} file
+   * @returns {void}
+   * @memberof ActiveFileManagerService
+   */
   setActiveMd(file: IPossessionFiles): void {
     if (this.compareActiveFile(file)) {
       return;
@@ -54,13 +61,17 @@ export class ActiveFileManagerService {
       }
     }
 
-
-
     this.activePossesionFiles = file;
     this.activeContentChangeFlg = false;
     this.$activeFileSubject.next(this.activePossesionFiles);
   }
 
+  /**
+   * 現在有効なmarkdownファイル情報を返す。
+   *
+   * @returns {IPossessionFiles}
+   * @memberof ActiveFileManagerService
+   */
   getActiveMd(): IPossessionFiles {
     return this.activePossesionFiles;
   }
@@ -107,6 +118,14 @@ export class ActiveFileManagerService {
     return false;
   }
 
+  /**
+   * 保存を行う。
+   *
+   * @param {IPossessionFiles} [file]
+   * @param {string} [text]
+   * @returns
+   * @memberof ActiveFileManagerService
+   */
   save(file?: IPossessionFiles, text?: string) {
     if (!this.isMdContentChanged()) {
       return;
