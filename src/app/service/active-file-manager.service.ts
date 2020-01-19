@@ -177,8 +177,15 @@ export class ActiveFileManagerService {
     return this.activePossesionFiles.dir;
   }
 
+  /**
+   * フォルダ、またはファイルの作成を行う。
+   *
+   * ファイルを作成する場合、空ファイルとなる。
+   *
+   * @param {string} path フォルダ、またはファイルまでのフルパス
+   * @memberof ActiveFileManagerService
+   */
   makeDirFile(path: string) {
-    console.log(`makedir`);
     const sPath = path.split(sep);
     let checkPath = '';
     for (const s of sPath) {
