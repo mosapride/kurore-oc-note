@@ -71,6 +71,13 @@ export class FileTreeService {
     this.$iTreeWorkSpaceSubject = new Subject<ITreeWorkSpace>();
   }
 
+  getHomeMarkdownUrl(): string | undefined {
+    if (!this.treeWorkSpace) {
+      return undefined;
+    }
+    return normalize(this.treeWorkSpace.dir + sep + `index.md`);
+  }
+
   /**
    * フォルダを開く
    *

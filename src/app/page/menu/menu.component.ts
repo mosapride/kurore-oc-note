@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ElectronDialogService } from '../../service/electron-dialog.service';
 import { ActiveFileManagerService } from '../../service/active-file-manager.service';
+import { FileTreeService } from '../../service/file-tree.service';
 
 @Component({
   selector: 'app-menu',
@@ -12,9 +13,16 @@ export class MenuComponent {
   constructor(
     private electronDialogService: ElectronDialogService,
     private activeFileManagerService: ActiveFileManagerService,
+    private fileTreeService: FileTreeService,
   ) { }
 
-  styleSave(): boolean {
+  /**
+   * 保存が無効か
+   *
+   * @returns {boolean} true:無効,false:有効
+   * @memberof MenuComponent
+   */
+  styleSaveDisable(): boolean {
     return !this.activeFileManagerService.isMdContentChanged();
   }
 
@@ -22,6 +30,32 @@ export class MenuComponent {
     if (this.activeFileManagerService.isMdContentChanged()) {
       this.activeFileManagerService.save();
     }
+  }
+
+  /**
+   * ホームボタンが無効か
+   *
+   * @returns {boolean} true:無効、false：有効
+   * @memberof MenuComponent
+   */
+  styleHomeDisable():boolean {
+    if (typeof this.fileTreeService.treeWorkSpace === 'undefined') {
+      return true;
+    }
+    return false;
+  }
+
+  home() {
+    if(this.styleHomeDisable()) {
+      return;
+    }
+    const url = this.fileTreeService.getHomeMarkdownUrl();
+    const poss = this.fileTreeService.getPossessionFiles(url)
+    if (poss) {
+      this.activeFileManagerService.setActiveMd(poss);
+      this.fileTreeService.openDirectory(poss);
+    }
+
   }
 
   open() {
