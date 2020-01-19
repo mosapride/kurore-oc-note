@@ -1,15 +1,14 @@
 import { SaveDataService, EJsonPropertySingleString } from './save-data.service';
-/* -------------------------------------------------------------------------------
- * ファイルツリーサービス.
- *
- * エクスプロラーに必要なディレクトリ・ファイルツリー情報を管理する
- * -------------------------------------------------------------------------------*/
-
 import { sep, win32, dirname, normalize } from 'path';
 import { Injectable } from '@angular/core';
 import { ElectronService } from '../core/services';
 import { FSWatcher } from 'fs';
 import { Subject } from 'rxjs';
+/* -------------------------------------------------------------------------------
+ * ファイルツリーサービス.
+ *
+ * エクスプロラーに必要なディレクトリ・ファイルツリー情報を管理する
+ * -------------------------------------------------------------------------------*/
 
 /**
  * ワークスペース管理.
@@ -72,6 +71,14 @@ export class FileTreeService {
     this.$iTreeWorkSpaceSubject = new Subject<ITreeWorkSpace>();
   }
 
+  /**
+   * フォルダを開く
+   *
+   * viewerからパス指定でMarkdownファイル開かれた場合に上位ディレクトリフォルダをすべて開く
+   *
+   * @param {IPossessionFiles} file
+   * @memberof FileTreeService
+   */
   openDirectory(file: IPossessionFiles) {
     const rep = (url: string): string => {
       return normalize(url).replace(/\\|\//g, '');
@@ -94,12 +101,18 @@ export class FileTreeService {
 
   }
 
-  allCloseDirectory() {
+  /**
+   * すべてのフォルダを閉じる.
+   *
+   * @returns
+   * @memberof FileTreeService
+   */
+  allCloseDirectory(): void {
     if (!this.treeWorkSpace) {
       return;
     }
     const closer = (possessionFiles: PossessionFiles[]) => {
-      possessionFiles.filter(e => e.isDirectory === true).forEach(element =>{
+      possessionFiles.filter(e => e.isDirectory === true).forEach(element => {
         element.openFlg = false;
         if (element.possessionFiles.length >= 1) {
           closer(element.possessionFiles);
