@@ -22,7 +22,10 @@ export enum SAVE_DIALOG {
 })
 export class ElectronDialogService {
   private dialog: Electron.Dialog;
-  constructor(private es: ElectronService, private fts: FileTreeService) {
+  constructor(
+    private es: ElectronService,
+    private fileTreeService: FileTreeService
+  ) {
     this.dialog = es.remote.dialog;
   }
 
@@ -42,7 +45,7 @@ export class ElectronDialogService {
         if (folders.filePaths.length === 0) {
           return;
         } else {
-          this.fts.setTreeRoot(folders.filePaths[0]);
+          this.fileTreeService.setTreeRoot(folders.filePaths[0]);
         }
       });
   }
