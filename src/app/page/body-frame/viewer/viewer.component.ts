@@ -1,3 +1,4 @@
+import { HistoryService } from './../../../service/history.service';
 import { FileTreeService } from './../../../service/file-tree.service';
 import { FileManagerService, EStatType } from './../../../service/file-manager.service';
 import { ElectronService } from './../../../core/services/electron/electron.service';
@@ -19,7 +20,7 @@ export class ViewerComponent implements OnInit {
     private electronService: ElectronService,
     private activeFileManagerService: ActiveFileManagerService,
     private fileManagerService: FileManagerService,
-    private fileTreeService: FileTreeService
+    private fileTreeService: FileTreeService,
   ) { }
 
   ngOnInit() {
@@ -42,7 +43,7 @@ export class ViewerComponent implements OnInit {
    * @returns
    * @memberof ViewerComponent
    */
-  @HostListener('click', ['$event']) onclick(event:MouseEvent) {
+  @HostListener('click', ['$event']) onclick(event: MouseEvent) {
 
     let href = '';
     try {
@@ -73,6 +74,7 @@ export class ViewerComponent implements OnInit {
         this.electronService.shell.openItem(href);
         return;
       } else {
+
         const poss = this.fileTreeService.getPossessionFiles(href)
         if (poss) {
           this.activeFileManagerService.setActiveMd(poss);

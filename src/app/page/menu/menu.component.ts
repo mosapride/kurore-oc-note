@@ -1,3 +1,4 @@
+import { HistoryService } from './../../service/history.service';
 import { Component } from '@angular/core';
 import { ElectronDialogService } from '../../service/electron-dialog.service';
 import { ActiveFileManagerService } from '../../service/active-file-manager.service';
@@ -14,6 +15,7 @@ export class MenuComponent {
     private electronDialogService: ElectronDialogService,
     private activeFileManagerService: ActiveFileManagerService,
     private fileTreeService: FileTreeService,
+    public historyService: HistoryService
   ) { }
 
   /**
@@ -38,7 +40,7 @@ export class MenuComponent {
    * @returns {boolean} true:無効、false：有効
    * @memberof MenuComponent
    */
-  styleHomeDisable():boolean {
+  styleHomeDisable(): boolean {
     if (typeof this.fileTreeService.treeWorkSpace === 'undefined') {
       return true;
     }
@@ -46,9 +48,10 @@ export class MenuComponent {
   }
 
   home() {
-    if(this.styleHomeDisable()) {
+    if (this.styleHomeDisable()) {
       return;
     }
+    this.historyService.clearHistory();
     const url = this.fileTreeService.getHomeMarkdownUrl();
     const poss = this.fileTreeService.getPossessionFiles(url)
     if (poss) {

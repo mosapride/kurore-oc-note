@@ -218,5 +218,4 @@ export class ActiveFileManagerService {
       checkPath += sep;
     }
   }
-
 }

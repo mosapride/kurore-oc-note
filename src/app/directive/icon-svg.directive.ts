@@ -21,7 +21,7 @@ export class IconSvgDirective implements OnInit {
 
   @HostListener('mouseover')
   onMouseOver() {
-    this.el.nativeElement.style.filter = 'contrast(10%)';
+    // this.el.nativeElement.style.filter = 'contrast(10%)';
   }
 
   @HostListener('mouseleave')

@@ -3,6 +3,6 @@
   <span appIconSvg src="assets/icon/toc.svg" size="24"class="disable"></span>
   <span appIconSvg src="assets/icon/save.svg" size="24" (click)="save()" [ngClass]="{'disable' : styleSaveDisable()}"></span>
   <span appIconSvg src="assets/icon/home.svg" size="24" (click)="home()" [ngClass]="{'disable' : styleHomeDisable()}"></span>
-  <span appIconSvg src="assets/icon/arrow_back.svg" size="24"></span>
-  <span appIconSvg src="assets/icon/arrow_forward.svg" size="24" class="disable"></span>
+  <span appIconSvg src="assets/icon/arrow_back.svg" size="24" (click)="historyService.backHistory()" [ngClass]="{'disable' : !historyService.hasBackHistory()}"></span>
+  <span appIconSvg src="assets/icon/arrow_forward.svg" size="24" (click)="historyService.forwardHistory()" [ngClass]="{'disable' : !historyService.hasFowardHistory()}"></span>
 </div>
