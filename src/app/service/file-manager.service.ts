@@ -152,9 +152,23 @@ export class FileManagerService {
    * @param {string} property
    * @param {string} value
    */
-  writeJson(configFile : string, property: string, value: string) {
+  writeJson(configFile: string, property: string, value: string) {
     const obj = JSON.parse(this.readFile(configFile));
     obj[property] = value;
     this.electronService.fs.writeFileSync(configFile, JSON.stringify(obj), 'utf8');
+  }
+
+
+  public copy(src: string, dest: string, callback: () => void): void {
+    if (this.isStatSync(dest)) {
+      callback();
+      return;
+    }
+
+    this.electronService.fs.copyFile(src, dest, this.electronService.fs.constants.COPYFILE_EXCL
+      , (err) => {
+        if (err) { throw err; }
+        callback();
+      });
   }
 }

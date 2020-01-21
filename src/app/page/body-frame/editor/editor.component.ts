@@ -1,3 +1,4 @@
+import { FileManagerService } from './../../../service/file-manager.service';
 import { ActiveFileManagerService } from './../../../service/active-file-manager.service';
 import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import * as codetype from 'codemirror';
@@ -25,7 +26,8 @@ export class EditorComponent implements OnInit {
     public electronService: ElectronService,
     private activeFileManagerService: ActiveFileManagerService,
     private datePipe: DatePipe,
-    ) { }
+    private fileManagerService: FileManagerService,
+  ) { }
 
   getChangeFlg(): string {
     if (this.activeFileManagerService.isMdContentChanged()) {
@@ -53,8 +55,14 @@ export class EditorComponent implements OnInit {
       },
     });
     this.codeInstance.setSize('100%', '100%');
-    this.codeInstance.on('change', (ins: codetype.Editor, changeObj: codetype.EditorChangeLinkedList) => this.onChangeTextArea(ins, changeObj));
-    this.codeInstance.on('focus', (instance) => instance.refresh());
+    this.codeInstance.on('change', (ins: codetype.Editor, changeObj: codetype.EditorChangeLinkedList) => {
+      this.onChangeTextArea(ins, changeObj)
+    });
+    this.codeInstance.on('focus', (instance) => {
+      instance.refresh();
+    });
+
+
     this.codeInstance.on('paste', (instance) => {
       const ctype = this.electronService.clipboard.availableFormats();
       console.log(ctype);
@@ -75,10 +83,26 @@ export class EditorComponent implements OnInit {
       }
       const imgName = this.datePipe.transform(new Date(), 'MMddhhmmss') + '.png';
       this.electronService.fs.writeFile(this.activeFileManagerService.getPath() + sep + imgName, this.electronService.clipboard.readImage().toPNG(), () => {
-        // this.updateCodeMirror(instance, `![${imgName}](./${imgName})`);
         this.codeInstance.getDoc().replaceSelection(`![${imgName}](./${imgName})`);
         this.activeFileManagerService.setMdContentChange(this.codeInstance.getValue());
       });
+    });
+    this.codeInstance.on('drop', (instance, event) => {
+      if (!this.activeFileManagerService.getActiveMd()) {
+        return;
+      }
+      try {
+        if (event.dataTransfer.files[0].type.match(/png|gif|jpeg|jpg|bmp/)) {
+          const name = event.dataTransfer.files[0].name;
+          const path = event.dataTransfer.files[0].path;
+          this.fileManagerService.copy(path, this.activeFileManagerService.getPath() + sep + name, () => {
+            instance.getDoc().replaceRange(`![${name}](./${name})`, instance.getCursor());
+            this.activeFileManagerService.setMdContentChange(this.codeInstance.getValue());
+          });
+        }
+      } catch (e) {
+        return;
+      }
     });
   }
 

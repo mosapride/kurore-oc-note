@@ -36,7 +36,7 @@ export class HistoryService {
     this.possessionFilesHistory = [];
   }
 
-  addHistory(po: IPossessionFiles): void {
+  private addHistory(po: IPossessionFiles): void {
     if (this.possessionFilesHistory.length > this.historyNo) {
       this.possessionFilesHistory = this.possessionFilesHistory.slice(0 , this.historyNo);
     }
