@@ -1,7 +1,9 @@
+import { FileManagerService } from './../../../../service/file-manager.service';
+import { ElectronService } from './../../../../core/services/electron/electron.service';
 import { ActiveFileManagerService } from './../../../../service/active-file-manager.service';
-import { Component, Input, ElementRef, ViewChild } from '@angular/core';
+import { Component, Input, ElementRef, ViewChild, NgZone, ChangeDetectorRef } from '@angular/core';
 import { IPossessionFiles } from '../../../../service/file-tree.service';
-import { sep } from 'path';
+import { sep, normalize } from 'path';
 import { DomSanitizer } from '@angular/platform-browser';
 
 
@@ -11,11 +13,21 @@ import { DomSanitizer } from '@angular/platform-browser';
   styleUrls: ['./prossession-file.component.scss']
 })
 export class ProssessionFileComponent {
-  @ViewChild('item', { static: true }) item: ElementRef;
+  // @ViewChild('item', { static: true }) item: ElementRef;
+  @ViewChild('newFolder', { static: false }) newFolder: ElementRef;
+  @ViewChild('rename1', { static: false }) rename1: ElementRef;
+  @ViewChild('rename2', { static: false }) rename2: ElementRef;
+  @ViewChild('lightbox', { static: false }) lightbox: ElementRef;
   @Input() file: IPossessionFiles;
+  newFolderFlg = false;
+  renameFlg = false;
   constructor(
     private activeFileManagerService: ActiveFileManagerService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private ngZone: NgZone,
+    private electronService: ElectronService,
+    private changeDetectorRef: ChangeDetectorRef,
+    private fileManagerService: FileManagerService
   ) { }
 
   isImage() {
@@ -27,6 +39,19 @@ export class ProssessionFileComponent {
       }
     }
     return false;
+  }
+
+  openLightbox(event) {
+    if(this.renameFlg) {
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
+    let native = this.lightbox.nativeElement as HTMLElement;
+    native.setAttribute(`href`, this.file.dir + sep + this.file.name);
+    native.setAttribute(`data-lightbox`, `explorer`);
+    native.setAttribute(`lightbox`, `explorer`);
+    native.setAttribute(`rel`, `lightbox`);
   }
 
   getImageHref() {
@@ -46,5 +71,121 @@ export class ProssessionFileComponent {
 
   isActive(file: IPossessionFiles) {
     return this.activeFileManagerService.compareActiveFile(file);
+  }
+
+
+  onRightClick(file: IPossessionFiles) {
+    if (file.isDirectory) {
+      this.rightClickOnDirectory(file);
+    } else {
+      this.rightClickOnFile(file);
+    }
+  }
+
+  /**
+   * フォルダを右クリックしたときのイベント
+   *
+   * @private
+   * @param {IPossessionFiles} file
+   * @memberof ProssessionFileComponent
+   */
+  private rightClickOnDirectory(file: IPossessionFiles) {
+    const menu = new this.electronService.remote.Menu();
+    const menuItem = this.electronService.remote.MenuItem;
+    menu.append(new menuItem({
+      label: 'open explorer', click: () => {
+        this.ngZone.run(() => {
+          this.electronService.shell.showItemInFolder(normalize(file.dir + sep + file.name));
+        });
+      }
+    }));
+    menu.append(new menuItem({ type: 'separator' }));
+    menu.append(new menuItem({
+      label: 'new folder', click: () => {
+        this.ngZone.run(() => {
+          this.newFolderFlg = true;
+          this.file.openFlg = true;
+          this.changeDetectorRef.detectChanges();
+          this.newFolder.nativeElement.focus();
+        });
+      }
+    }));
+    menu.append(new menuItem({
+      label: 'rename', click: () => {
+        this.ngZone.run(() => {
+          this.renameFlg = true;
+          this.changeDetectorRef.detectChanges();
+          this.rename1.nativeElement.focus();
+        });
+      }
+    }));
+    menu.append(new menuItem({ type: 'separator' }));
+    menu.append(new menuItem({
+      label: 'delete', click: () => {
+        this.ngZone.run(() => {
+          this.rm();
+        });
+      }
+    }));
+    menu.popup({
+      window: this.electronService.remote.getCurrentWindow(), callback: () => {
+      }
+    });
+  }
+
+  /**
+   * 新しいディレクトリを作成する
+   *
+   * @param {string} name 作成するディレクトリ名
+   * @memberof ProssessionFileComponent
+   */
+  mkDir(name: string) {
+    this.fileManagerService.mkdirSync(normalize(this.file.dir + sep + this.file.name + sep + name));
+    this.newFolderFlg = false;
+  }
+
+  rename(name: string) {
+    const path = this.file.dir + sep;
+    this.fileManagerService.renameSync(normalize(path + this.file.name), normalize(path + name));
+    this.file.name = name;
+    this.renameFlg = false;
+  }
+
+  rm() {
+    this.fileManagerService.rmSync(normalize(normalize(this.file.dir + sep + this.file.name)));
+  }
+
+  private rightClickOnFile(file: IPossessionFiles) {
+    const menu = new this.electronService.remote.Menu();
+    const menuItem = this.electronService.remote.MenuItem;
+    menu.append(new menuItem({
+      label: 'open explorer', click: () => {
+        this.ngZone.run(() => {
+          this.electronService.shell.showItemInFolder(normalize(file.dir + sep + file.name));
+        });
+      }
+    }));
+    menu.append(new menuItem({ type: 'separator' }));
+    menu.append(new menuItem({
+      label: 'rename', click: () => {
+        this.ngZone.run(() => {
+          this.renameFlg = true;
+          this.changeDetectorRef.detectChanges();
+          this.rename2.nativeElement.focus();
+        });
+      }
+    }));
+    menu.append(new menuItem({ type: 'separator' }));
+    menu.append(new menuItem({
+      label: 'delete', click: () => {
+        this.ngZone.run(() => {
+          this.rm();
+        });
+      }
+    }));
+    menu.popup({
+      window: this.electronService.remote.getCurrentWindow(), callback: () => {
+      }
+    });
   }
 }

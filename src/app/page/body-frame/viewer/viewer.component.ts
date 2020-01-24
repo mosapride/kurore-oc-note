@@ -1,4 +1,3 @@
-import { HistoryService } from './../../../service/history.service';
 import { FileTreeService } from './../../../service/file-tree.service';
 import { FileManagerService, EStatType } from './../../../service/file-manager.service';
 import { ElectronService } from './../../../core/services/electron/electron.service';

@@ -1,12 +1,7 @@
 import { IPossessionFiles } from './../../../../../service/file-tree.service';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { timeout, retry } from 'rxjs/operators';
 import { Component, Input, ElementRef, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
 
 const ICON_PATH = "assets/file-icon/";
-const headers = new HttpHeaders();
-headers.set('Accept', 'image/svg+xml');
 
 @Component({
   selector: 'app-icon',
@@ -18,7 +13,7 @@ export class IconComponent implements OnInit {
   @Input() openFlg: boolean = false;
   @Input() name: string = '';
 
-  constructor(private el: ElementRef, private http: HttpClient) { }
+  constructor(private el: ElementRef) { }
 
   private getCloneIPossession(): IPossessionFiles {
     const file = new class IPossessionFiles {

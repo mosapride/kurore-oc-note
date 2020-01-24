@@ -1,13 +1,41 @@
 <div>
+  <!-- 画像の場合 lightbox2使用のため -->
   <ng-container *ngIf="isImage()">
-    <a [href]="getImageHref()" [style.padding-left]="((file.depth - 1) * 10) + 5 + 'px'" [attr.data-lightbox]="file.name"  [ngClass]="{'active': isActive(file)}" class="item">
-      <app-icon [isDirectory]="file.isDirectory" [openFlg]="file.openFlg" [name]="file.name"></app-icon><span class="item-name">{{file.name}}</span></a>
+    <!-- <a #lightbox [href]="getImageHref()" [style.padding-left]="((file.depth - 1) * 10) + 5 + 'px'" [attr.data-lightbox]="file.name" [ngClass]="{'active': isActive(file)}" class="item" (contextmenu)="onRightClick(file)"> -->
+      <a #lightbox href="javascript:void(0)" [style.padding-left]="((file.depth - 1) * 10) + 5 + 'px'" (click)="openLightbox($event)" [ngClass]="{'active': isActive(file)}" class="item" (contextmenu)="onRightClick(file)">
+      <app-icon [isDirectory]="file.isDirectory" [openFlg]="file.openFlg" [name]="file.name"></app-icon>
+      <span class="item-name">
+        <ng-container *ngIf="renameFlg">
+          <input type="text" [value]="file.name" #rename2  (blur)="renameFlg = false" (keydown.esc)="renameFlg = false" (keyup.enter)="rename(rename2.value)"  class="rename">
+        </ng-container>
+        <ng-container *ngIf="!renameFlg">
+          {{file.name}}
+        </ng-container>
+      </span>
+    </a>
   </ng-container>
+  <!-- 画像以外の場合 -->
   <ng-container *ngIf="!isImage()">
-    <div #item class="item" [style.padding-left]="((file.depth - 1) * 10) + 5 + 'px'" (click)="clickEvent(file , $event)" [ngClass]="{'active': isActive(file)}">
-      <app-icon [isDirectory]="file.isDirectory" [openFlg]="file.openFlg" [name]="file.name"></app-icon><span  class="item-name">{{file.name}}</span></div>
+    <div class="item" [style.padding-left]="((file.depth - 1) * 10) + 5 + 'px'" (click)="clickEvent(file , $event)" [ngClass]="{'active': isActive(file)}" (contextmenu)="onRightClick(file)">
+      <app-icon [isDirectory]="file.isDirectory" [openFlg]="file.openFlg" [name]="file.name"></app-icon>
+      <span class="item-name">
+        <ng-container *ngIf="renameFlg">
+          <input type="text" [value]="file.name" #rename1 (blur)="renameFlg = false"  (keydown.esc)="renameFlg = false" (keyup.enter)="rename(rename1.value)" class="rename">
+        </ng-container>
+        <ng-container *ngIf="!renameFlg">
+          {{file.name}}
+        </ng-container>
+      </span>
+    </div>
   </ng-container>
-
+  <!-- フォルダ新規作成 -->
+  <div *ngIf="newFolderFlg">
+    <div class="item" [style.padding-left]="((file.depth - 1) * 10) + 15 + 'px'" [ngClass]="{'active': isActive(file)}" (contextmenu)="onRightClick(file)">
+      <app-icon [isDirectory]="true" [openFlg]="false" [name]="file.name"></app-icon><span class="item-name">
+        <input type="text" #newFolder (blur)="newFolderFlg = false" (keydown.esc)="newFolderFlg = false" (keyup.enter)="mkDir(newFolder.value)">
+      </span>
+    </div>
+  </div>
 </div>
 <ng-container *ngIf="file.isDirectory && file.openFlg">
   <ng-container *ngFor="let item of file.possessionFiles">

@@ -125,6 +125,14 @@ export class FileManagerService {
     this.electronService.fs.mkdirSync(path)
   }
 
+  renameSync(a: string, b: string) {
+    this.electronService.fs.renameSync(a, b);
+  }
+
+  rmSync(file : string) {
+    this.electronService.shell.moveItemToTrash(file);
+  }
+
   /**
    * 空ファイルの作成
    *
