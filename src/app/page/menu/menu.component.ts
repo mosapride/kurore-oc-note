@@ -52,6 +52,7 @@ export class MenuComponent {
       return;
     }
     this.historyService.clearHistory();
+
     const url = this.fileTreeService.getHomeMarkdownUrl();
     const poss = this.fileTreeService.getPossessionFiles(url)
     if (poss) {

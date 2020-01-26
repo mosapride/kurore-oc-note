@@ -15,11 +15,13 @@ import { DomSanitizer } from '@angular/platform-browser';
 export class ProssessionFileComponent {
   // @ViewChild('item', { static: true }) item: ElementRef;
   @ViewChild('newFolder', { static: false }) newFolder: ElementRef;
+  @ViewChild('newFile', { static: false }) newFile: ElementRef;
   @ViewChild('rename1', { static: false }) rename1: ElementRef;
   @ViewChild('rename2', { static: false }) rename2: ElementRef;
   @ViewChild('lightbox', { static: false }) lightbox: ElementRef;
   @Input() file: IPossessionFiles;
   newFolderFlg = false;
+  newFileFlg = false;
   renameFlg = false;
   constructor(
     private activeFileManagerService: ActiveFileManagerService,
@@ -42,7 +44,7 @@ export class ProssessionFileComponent {
   }
 
   openLightbox(event) {
-    if(this.renameFlg) {
+    if (this.renameFlg) {
       event.preventDefault();
       event.stopPropagation();
       return;
@@ -62,10 +64,13 @@ export class ProssessionFileComponent {
   clickEvent(file: IPossessionFiles, event?: any) {
     if (file.isDirectory) {
       file.openFlg = !file.openFlg;
+      return;
     }
 
     if (file.name.match(/\.md$/)) {
       this.activeFileManagerService.setActiveMd(file);
+    } else {
+      this.electronService.shell.openItem(normalize(file.dir + sep + file.name));
     }
   }
 
@@ -111,6 +116,17 @@ export class ProssessionFileComponent {
       }
     }));
     menu.append(new menuItem({
+      label: 'new file', click: () => {
+        this.ngZone.run(() => {
+          this.newFileFlg = true;
+          this.file.openFlg = true;
+          this.changeDetectorRef.detectChanges();
+          this.newFile.nativeElement.focus();
+          this.newFile.nativeElement.setSelectionRange(0, 8);
+        });
+      }
+    }));
+    menu.append(new menuItem({
       label: 'rename', click: () => {
         this.ngZone.run(() => {
           this.renameFlg = true;
@@ -142,6 +158,11 @@ export class ProssessionFileComponent {
   mkDir(name: string) {
     this.fileManagerService.mkdirSync(normalize(this.file.dir + sep + this.file.name + sep + name));
     this.newFolderFlg = false;
+  }
+
+  mkFile(name: string) {
+    this.fileManagerService.touchSync(normalize(this.file.dir + sep + this.file.name + sep + name))
+    this.newFileFlg = false;
   }
 
   rename(name: string) {

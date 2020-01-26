@@ -1,3 +1,4 @@
+import { FileManagerService } from './file-manager.service';
 import { SaveDataService, EJsonPropertySingleString } from './save-data.service';
 import { sep, win32, dirname, normalize } from 'path';
 import { Injectable } from '@angular/core';
@@ -66,6 +67,7 @@ export class FileTreeService {
   constructor(
     private electronService: ElectronService,
     private saveDataService: SaveDataService,
+    private fileManagerService: FileManagerService,
   ) {
     this.prcFS = new PrcFS(this.electronService);
     this.$iTreeWorkSpaceSubject = new Subject<ITreeWorkSpace>();
@@ -169,6 +171,7 @@ export class FileTreeService {
    * @memberof FileTreeService
    */
   public setTreeRoot(dir: string) {
+    this.electronService.remote.getCurrentWindow().webContents.session.clearCache();
     this.treeWorkSpace = new class implements ITreeWorkSpace {
       dir = '';
       possessionFiles = [];
@@ -209,11 +212,18 @@ export class FileTreeService {
     if (this.fsWatcher) {
       this.fsWatcher.close();
     }
+    if (this.fileManagerService.isFile(normalize(this.treeWorkSpace.dir + sep + `style.css`))) {
+      document.getElementById('cs_viewer')['href'] = `${this.treeWorkSpace.dir}${sep}style.css#` + new Date().getTime();
+    }
 
     this.fsWatcher = this.electronService.fs.watch(tws.dir, { persistent: true, recursive: true }, (event, filename) => {
       if (event === 'change') {
         if (filename !== 'style.css') {
           return;
+        } else {
+          if (this.fileManagerService.isFile(normalize(this.treeWorkSpace.dir + sep + `style.css`))) {
+            document.getElementById('cs_viewer')['href'] = `${this.treeWorkSpace.dir}${sep}style.css#` + new Date().getTime();
+          }
         }
       }
 

@@ -9,7 +9,7 @@ import { Component, AfterContentInit } from '@angular/core';
 @Component({
   selector: 'app-explorer',
   templateUrl: './explorer.component.html',
-  styleUrls: ['./explorer.component.scss']
+  styleUrls: ['./explorer.component.scss' , './prossession-file/prossession-file.component.scss']
 })
 export class ExplorerComponent implements AfterContentInit {
   iTreeWorkSpace: ITreeWorkSpace;
@@ -45,7 +45,6 @@ export class ExplorerComponent implements AfterContentInit {
     if (last) {
       if (this.fileManagerService.isDirectory(last)) {
         this.fileTreeService.setTreeRoot(last);
-        console.log(`debug`);
         if (this.fileManagerService.isFile(last + sep + 'index.md')) {
           const poss = this.fileTreeService.getPossessionFiles(last + sep + 'index.md');
           this.activeFileManagerService.setActiveMd(poss);
