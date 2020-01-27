@@ -1,0 +1,16 @@
+  <!-- フォルダ新規作成 -->
+  <div *ngIf="_newFolderFlg">
+    <div class="item" [style.padding-left]="((file.depth - 1) * 10) + 15 + 'px'">
+      <app-icon [isDirectory]="true" [openFlg]="false" [name]="file.name"></app-icon><span class="item-name">
+        <input type="text" #newFolder (blur)="clear()" (keydown.esc)="clear()" (keyup.enter)="mkDir(newFolder.value)" class="input-padding">
+      </span>
+    </div>
+  </div>
+  <!-- ファイル新規作成 -->
+  <div *ngIf="_newFileFlg">
+    <div class="item" [style.padding-left]="((file.depth - 1) * 10) + 15 + 'px'">
+      <app-icon [isDirectory]="false" [openFlg]="false" [name]="'new.md'"></app-icon><span class="item-name">
+        <input type="text" value="new file.md" #newFile (blur)="clear()" (keydown.esc)="clear()" (keyup.enter)="mkFile(newFile.value)" class="input-padding">
+      </span>
+    </div>
+  </div>

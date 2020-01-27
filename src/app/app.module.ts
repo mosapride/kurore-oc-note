@@ -28,6 +28,7 @@ import { ProssessionFileComponent } from './page/body-frame/explorer/prossession
 import { IconComponent } from "./page/body-frame/explorer/prossession-file/icon/icon.component";
 import { NoSanitizePipe } from './pipe/no-sanitize.pipe';
 import { DatePipe } from '@angular/common';
+import { NewDirfileComponent } from './page/body-frame/explorer/new-dirfile/new-dirfile.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -35,7 +36,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
 }
 
 @NgModule({
-  declarations: [AppComponent, BodyFrameComponent, ExplorerComponent, EditorComponent, ViewerComponent, SashComponent, IconSvgDirective, MenuComponent, ProssessionFileComponent, IconComponent, NoSanitizePipe],
+  declarations: [AppComponent, BodyFrameComponent, ExplorerComponent, EditorComponent, ViewerComponent, SashComponent, IconSvgDirective, MenuComponent, ProssessionFileComponent, IconComponent, NoSanitizePipe, NewDirfileComponent],
   imports: [
     BrowserModule,
     FormsModule,

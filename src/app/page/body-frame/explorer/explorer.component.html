@@ -6,8 +6,8 @@
   <div class="submenu">
     <span>{{getDirName()}}</span>
 
-    <span class="create_file-icon" appIconSvg src="assets/icon/create_file.svg" size="15" title="create new folder" (click)="close()"></span>
-    <span class="create_markdown" appIconSvg src="assets/icon/new.svg" size="15" title="create new file" (click)="close()"></span>
+    <span class="create_file-icon" appIconSvg src="assets/icon/create_file.svg" size="15" title="create new folder" (click)="newFolderFlg = true"></span>
+    <span class="create_markdown" appIconSvg src="assets/icon/new.svg" size="15" title="create new file" (click)="newFileFlg = true"></span>
     <span class="close-icon" appIconSvg src="assets/icon/close_folder.svg" size="15" title="エクスプロラーのフォルダを折りたたむ" (click)="close()"></span>
   </div>
   <ng-container *ngFor="let file of iTreeWorkSpace.possessionFiles">
@@ -15,3 +15,4 @@
   </ng-container>
 </ng-container>
 
+<app-new-dirfile [(newFolderFlg)]="newFolderFlg" [(newFileFlg)]="newFileFlg" [(file)]="file"></app-new-dirfile>

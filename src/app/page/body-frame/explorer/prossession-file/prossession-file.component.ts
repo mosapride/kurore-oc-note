@@ -14,10 +14,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 })
 export class ProssessionFileComponent {
   // @ViewChild('item', { static: true }) item: ElementRef;
-  @ViewChild('newFolder', { static: false }) newFolder: ElementRef;
-  @ViewChild('newFile', { static: false }) newFile: ElementRef;
-  @ViewChild('rename1', { static: false }) rename1: ElementRef;
-  @ViewChild('rename2', { static: false }) rename2: ElementRef;
+  @ViewChild('rename', { static: false }) rename: ElementRef;
   @ViewChild('lightbox', { static: false }) lightbox: ElementRef;
   @Input() file: IPossessionFiles;
   newFolderFlg = false;
@@ -110,8 +107,8 @@ export class ProssessionFileComponent {
         this.ngZone.run(() => {
           this.newFolderFlg = true;
           this.file.openFlg = true;
-          this.changeDetectorRef.detectChanges();
-          this.newFolder.nativeElement.focus();
+          // this.changeDetectorRef.detectChanges();
+          // this.newFolder.nativeElement.focus();
         });
       }
     }));
@@ -120,9 +117,9 @@ export class ProssessionFileComponent {
         this.ngZone.run(() => {
           this.newFileFlg = true;
           this.file.openFlg = true;
-          this.changeDetectorRef.detectChanges();
-          this.newFile.nativeElement.focus();
-          this.newFile.nativeElement.setSelectionRange(0, 8);
+          // this.changeDetectorRef.detectChanges();
+          // this.newFile.nativeElement.focus();
+          // this.newFile.nativeElement.setSelectionRange(0, 8);
         });
       }
     }));
@@ -131,7 +128,7 @@ export class ProssessionFileComponent {
         this.ngZone.run(() => {
           this.renameFlg = true;
           this.changeDetectorRef.detectChanges();
-          this.rename1.nativeElement.focus();
+          this.rename.nativeElement.focus();
         });
       }
     }));
@@ -149,23 +146,7 @@ export class ProssessionFileComponent {
     });
   }
 
-  /**
-   * 新しいディレクトリを作成する
-   *
-   * @param {string} name 作成するディレクトリ名
-   * @memberof ProssessionFileComponent
-   */
-  mkDir(name: string) {
-    this.fileManagerService.mkdirSync(normalize(this.file.dir + sep + this.file.name + sep + name));
-    this.newFolderFlg = false;
-  }
-
-  mkFile(name: string) {
-    this.fileManagerService.touchSync(normalize(this.file.dir + sep + this.file.name + sep + name))
-    this.newFileFlg = false;
-  }
-
-  rename(name: string) {
+  setRename(name: string) {
     const path = this.file.dir + sep;
     this.fileManagerService.renameSync(normalize(path + this.file.name), normalize(path + name));
     this.file.name = name;
@@ -192,7 +173,7 @@ export class ProssessionFileComponent {
         this.ngZone.run(() => {
           this.renameFlg = true;
           this.changeDetectorRef.detectChanges();
-          this.rename2.nativeElement.focus();
+          this.rename.nativeElement.focus();
         });
       }
     }));

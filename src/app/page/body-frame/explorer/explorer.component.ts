@@ -2,17 +2,20 @@ import { ActiveFileManagerService } from './../../../service/active-file-manager
 import { sep } from 'path';
 import { FileManagerService } from './../../../service/file-manager.service';
 import { SaveDataService, EJsonPropertySingleString } from './../../../service/save-data.service';
-import { FileTreeService, ITreeWorkSpace } from './../../../service/file-tree.service';
+import { FileTreeService, ITreeWorkSpace, IPossessionFiles } from './../../../service/file-tree.service';
 import { ElectronDialogService } from './../../../service/electron-dialog.service';
 import { Component, AfterContentInit } from '@angular/core';
 
 @Component({
   selector: 'app-explorer',
   templateUrl: './explorer.component.html',
-  styleUrls: ['./explorer.component.scss' , './prossession-file/prossession-file.component.scss']
+  styleUrls: ['./explorer.component.scss', './prossession-file/prossession-file.component.scss']
 })
 export class ExplorerComponent implements AfterContentInit {
   iTreeWorkSpace: ITreeWorkSpace;
+  file: IPossessionFiles;
+  newFileFlg = false;
+  newFolderFlg = false;
   constructor(
     private ed: ElectronDialogService,
     private fileTreeService: FileTreeService,
@@ -40,6 +43,19 @@ export class ExplorerComponent implements AfterContentInit {
   ngAfterContentInit() {
     this.fileTreeService.$iTreeWorkSpaceSubject.subscribe(tree => {
       this.iTreeWorkSpace = tree;
+      this.file = new class implements IPossessionFiles {
+        dir = '';  // ディレクトリ
+        name = ''; // ファイル名
+        depth = 0; // ワークスペースからの階層No
+        isDirectory: boolean; // ディレクトリフラグ
+        openFlg: boolean;  // ディレクトリ時のオープンフラング
+        possessionFiles: IPossessionFiles[];  // 所持しているファイル一覧
+      }
+      const reg = new RegExp(this.getDirName() + '$');
+      this.file.dir = this.iTreeWorkSpace.dir.replace(reg, '');
+      this.file.name = this.getDirName();
+      console.log(`debugggg`);
+
     });
     const last = this.saveDataService.readJsonPropatry(EJsonPropertySingleString.lastWorkSpaceName);
     if (last) {
