@@ -38,7 +38,6 @@ export class HistoryService {
   }
 
   private addHistory(po: IPossessionFiles): void {
-    console.log(`addHistory`);
     if (this.possessionFilesHistory.length > this.historyNo) {
       this.possessionFilesHistory = this.possessionFilesHistory.slice(0 , this.historyNo);
     }

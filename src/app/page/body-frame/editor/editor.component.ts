@@ -65,10 +65,8 @@ export class EditorComponent implements OnInit {
 
     this.codeInstance.on('paste', (instance) => {
       const ctype = this.electronService.clipboard.availableFormats();
-      console.log(ctype);
       let rtnFlg = true;
       for (const c of ctype) {
-        console.log(c);
         if (c.match(/image/)) {
           rtnFlg = false;
           break;
@@ -108,7 +106,12 @@ export class EditorComponent implements OnInit {
 
   initSubject() {
     this.activeFileManagerService.$activeFileSubject.asObservable().subscribe(pross => {
-      const markdownContents = this.activeFileManagerService.readFileMd(pross);
+      let markdownContents: string;
+      try {
+        markdownContents = this.activeFileManagerService.readFileMd(pross);
+      } catch (e) {
+        return;
+      }
       this.codeInstance.getDoc().clearHistory();
       this.codeInstance.setValue(markdownContents);
       this.activeFileManagerService.setMdContentChange(this.codeInstance.getValue(), true);

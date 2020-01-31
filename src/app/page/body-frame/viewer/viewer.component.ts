@@ -43,17 +43,17 @@ export class ViewerComponent implements OnInit {
    * @memberof ViewerComponent
    */
   @HostListener('click', ['$event']) onclick(event: MouseEvent) {
-
     let href = '';
     try {
+      // 画像イメージの場合
+      if (event.target['classList'].contains('set-lightbox')) {
+        return;
+      }
+
       href = event.target['dataset'].inlink;
       // 内部リンクではない場合
       if (!href) {
         href = event.target['dataset'].outerlink;
-        // 外部リンクでも無い場合(image)
-        if (!href) {
-          return;
-        }
         event.preventDefault();
         event.stopPropagation();
         this.electronService.shell.openExternal(href);
@@ -73,7 +73,6 @@ export class ViewerComponent implements OnInit {
         this.electronService.shell.openItem(href);
         return;
       } else {
-
         const poss = this.fileTreeService.getPossessionFiles(href)
         if (poss) {
           this.activeFileManagerService.setActiveMd(poss);
