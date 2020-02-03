@@ -1,7 +1,7 @@
 import { FileManagerService } from './file-manager.service';
 import { ElectronService } from './../core/services/electron/electron.service';
 import { Injectable } from '@angular/core';
-import { sep } from 'path';
+import { sep, normalize } from 'path';
 
 // 設定ファイル名称
 const JsonInfo = {
@@ -65,7 +65,8 @@ export class SaveDataService {
   readJsonPropatryArray(key: EJsonPropertyArray): string[] {
     let rtn: string[] = [];
     const json = JSON.parse(this.fileManagerService.readFile(this.getJsonFilePath()));
-    for (let j of json[key]) {
+    const w = json[key];
+    for (let j of w) {
       rtn.push(j + '');
     }
     return rtn;
@@ -96,5 +97,66 @@ export class SaveDataService {
    */
   writeJsonPropatry(ej: EJsonPropertySingleString, contents: string): void {
     this.fileManagerService.writeJson(this.getJsonFilePath(), ej, contents);
+
+    if (ej === EJsonPropertySingleString.lastWorkSpaceName) {
+      this.writeListJsonPropatry(EJsonPropertyArray.historyWorkSpace, contents);
+    }
+  }
+
+  /**
+   * 設定情報JSONに書き込まれたstringの配列形式の情報を書き込む.
+   *
+   * 同じデータが存在する場合は上書きを行う.
+   *
+   * @private
+   * @param {EJsonPropertyArray} property
+   * @param {string} value
+   * @memberof SaveDataService
+   */
+  private writeListJsonPropatry(property: EJsonPropertyArray, value: string) {
+    const obj = JSON.parse(this.fileManagerService.readFile(this.getJsonFilePath()));
+    if (!(obj[property] instanceof Array)) {
+      obj[property] = [];
+    }
+    let pushFlg = true;
+    if (obj[property] instanceof Array) {
+      for (const o of obj[property]) {
+        if (o === value) {
+          pushFlg = false;
+          break;
+        }
+      }
+    }
+    if (pushFlg) {
+      obj[property].push(value);
+    }
+    this.fileManagerService.writeJson(this.getJsonFilePath(), property, obj[property]);
+  }
+
+  /**
+   * 設定情報JSONに書き込まれたstringの配列形式の情報を書き込む.
+   *
+   * 同じデータが存在する場合は上書きを行う.
+   *
+   * @private
+   * @param {EJsonPropertyArray} property
+   * @param {string} value
+   * @memberof SaveDataService
+   */
+  deleteListJsonPropatry(property: EJsonPropertyArray, value: string) {
+    const obj = JSON.parse(this.fileManagerService.readFile(this.getJsonFilePath()));
+    if (!(obj[property] instanceof Array)) {
+      obj[property] = [];
+    }
+
+    const setValues: string[] = [];
+    if (obj[property] instanceof Array) {
+      for (const o of obj[property]) {
+        if (normalize(o) !== normalize(value)) {
+          setValues.push(o);
+        }
+      }
+    }
+    this.fileManagerService.writeJson(this.getJsonFilePath(), property, setValues);
   }
 }

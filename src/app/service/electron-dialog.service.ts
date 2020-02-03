@@ -46,6 +46,8 @@ export class ElectronDialogService {
           return;
         } else {
           this.fileTreeService.setTreeRoot(folders.filePaths[0]);
+          this.es.remote.app.relaunch();
+          this.es.remote.app.exit(0);
         }
       });
   }

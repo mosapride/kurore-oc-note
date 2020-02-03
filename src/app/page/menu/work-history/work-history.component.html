@@ -1,0 +1,13 @@
+<ng-container *ngIf="showFlg">
+  <div class="background" (click)="showFlg = false">
+
+
+    <div class="work-history" (click)="stopPropagation($event)">
+      <div class="title">workspace</div>
+      <div *ngFor="let w of getWorkSpaceList()">
+        <span appIconSvg src="assets/icon/close.svg" size="24" class="icon" title="delete" (click)="delete(w)"></span>
+        <span class="workspace" (click)="changeWorkSpace(w)">{{w}}</span>
+      </div>
+    </div>
+  </div>
+</ng-container>

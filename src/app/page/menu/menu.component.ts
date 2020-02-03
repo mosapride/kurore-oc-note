@@ -10,7 +10,7 @@ import { FileTreeService } from '../../service/file-tree.service';
   styleUrls: ['./menu.component.scss']
 })
 export class MenuComponent {
-
+  showWorkHisotryFlg = false;
   constructor(
     private electronDialogService: ElectronDialogService,
     private activeFileManagerService: ActiveFileManagerService,
