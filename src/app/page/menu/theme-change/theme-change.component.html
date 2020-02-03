@@ -1,0 +1,18 @@
+<ng-container *ngIf="showFlg">
+  <div class="background" (click)="showFlg = false">
+    <div class="work-history" (click)="stopPropagation($event)">
+      <div class="title">change code theme</div>
+      <!-- <div *ngFor="let w of getWorkSpaceList()">
+        <span appIconSvg src="assets/icon/close.svg" size="24" class="icon" title="delete" (click)="delete(w)"></span>
+        <span class="workspace" (click)="changeWorkSpace(w)">{{w}}</span>
+      </div> -->
+
+      <!-- <div> -->
+        <select (change)="changeTheme(highlightTheme)" [(ngModel)]="highlightTheme">
+          <option *ngFor="let t of theme" [value]="t">{{t}}</option>
+        </select>
+      <!-- </div> -->
+      <button (click)="saveTheme(highlightTheme)">Save Theme</button>
+    </div>
+  </div>
+</ng-container>

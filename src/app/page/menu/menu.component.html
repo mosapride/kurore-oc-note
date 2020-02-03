@@ -1,13 +1,14 @@
 <div>
   <span appIconSvg src="assets/icon/folder.svg" size="24" (click)="open()" title="ワークスペースを開く"></span>
   <span appIconSvg src="assets/icon/toc.svg" size="24"  (click)="work.show()" title="ワークスペース履歴表示"></span>
+  <span appIconSvg src="assets/icon/setting.svg" size="24" (click)="theme.open()" title="設定画面を開く"></span>
   <span appIconSvg src="assets/icon/save.svg" size="24" (click)="save()" title="保存" [ngClass]="{'disable' : styleSaveDisable()}"></span>
   <span appIconSvg src="assets/icon/home.svg" size="24" (click)="home()" title="ホームに移動" [ngClass]="{'disable' : styleHomeDisable()}"></span>
   <span appIconSvg src="assets/icon/arrow_back.svg" size="24" (click)="historyService.backHistory()" title="戻る" [ngClass]="{'disable' : !historyService.hasBackHistory()}"></span>
   <span appIconSvg src="assets/icon/arrow_forward.svg" size="24" (click)="historyService.forwardHistory()" title="進む" [ngClass]="{'disable' : !historyService.hasFowardHistory()}"></span>
 </div>
 
-<app-theme-change></app-theme-change>
+<app-theme-change #theme></app-theme-change>
 
 
 <app-work-history #work ></app-work-history>

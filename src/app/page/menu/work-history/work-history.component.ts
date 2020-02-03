@@ -24,7 +24,7 @@ export class WorkHistoryComponent implements OnInit {
 
   showFlg = false;
 
-  workSpaces: string[] = []
+  // workSpaces: string[] = [];
   constructor(
     private saveDataService: SaveDataService,
     private electronService: ElectronService,
@@ -32,7 +32,7 @@ export class WorkHistoryComponent implements OnInit {
 
 
   ngOnInit() {
-    this.workSpaces = this.saveDataService.readJsonPropatryArray(EJsonPropertyArray.historyWorkSpace);
+    // this.workSpaces = this.saveDataService.readJsonPropatryArray(EJsonPropertyArray.historyWorkSpace);
   }
 
   public show() {
