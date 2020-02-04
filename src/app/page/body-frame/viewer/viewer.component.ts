@@ -126,14 +126,16 @@ class MarketOption {
     const marketOption: marked.MarkedOptions = {
       highlight: function (str, lang) {
         let head = '<pre class="hljs highlight-padding"><code class="highlight-padding">';
+        let title = lang.split(':').length === 2 ? `<span class="highlight-title">${lang.split(':')[1]}</span>` : '';
+        lang = lang.split(':').length === 2 ? lang.split(':')[0] : lang;
         if (lang && hljs.getLanguage(lang)) {
           try {
-            return `${head}<div class="highlight-code">${hljs.highlight(lang, str, true).value}</div></code></pre>`;
+            return `${head}<div class="highlight-code">${title}${hljs.highlight(lang, str, true).value}</div></code></pre>`;
           } catch (err) {
-            return `<pre><code><div class="highlight-code">${hljs.highlight(lang, str, true).value}</div></code></pre>`;
+            return `<pre><code><div class="highlight-code">${title}${hljs.highlight(lang, str, true).value}</div></code></pre>`;
           }
         }
-        return `<pre class="hljs highlight-padding"><div class="highlight-code">${hljs.highlightAuto(str).value}</div></pre>`;
+        return `<pre class="hljs highlight-padding"><div class="highlight-code">${title}${hljs.highlightAuto(str).value}</div></pre>`;
       }
     }
     return marketOption;

@@ -101,7 +101,8 @@ body {
 }
 
 #viewer {
-  padding-left : 5px;
+  padding-left: 5px;
+
   .external-link {
 
     &::after {
@@ -131,4 +132,15 @@ body {
   top: 50% !important;
   transform: translateY(-50%);
   max-width: 100%;
+}
+
+
+.highlight-title {
+  color: #eee;
+  background-color: #777;
+  display: list-item;
+  transform: translateY(-0.5em);
+  padding: 2px 4px;
+  box-sizing: border-box;
+  width: fit-content;
 }
