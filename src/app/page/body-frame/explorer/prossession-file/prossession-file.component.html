@@ -1,7 +1,7 @@
 <div>
   <!-- 画像の場合 lightbox2使用のため -->
   <ng-container *ngIf="isImage()">
-    <a #lightbox href="javascript:void(0)" [style.padding-left]="((file.depth - 1) * 10) + 5 + 'px'" (click)="openLightbox($event)" [ngClass]="{'active': isActive(file)}" class="item" (contextmenu)="onRightClick(file)">
+    <a #lightbox href="" (dragstart)="copyName($event)" [style.padding-left]="((file.depth - 1) * 10) + 5 + 'px'" (click)="openLightbox($event)" class="item" (contextmenu)="onRightClick(file)">
       <app-icon [isDirectory]="file.isDirectory" [openFlg]="file.openFlg" [name]="file.name"></app-icon>
       <span class="item-name">
         <ng-container *ngIf="renameFlg">

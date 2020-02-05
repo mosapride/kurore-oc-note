@@ -2,7 +2,7 @@ import { FileManagerService } from './../../../../service/file-manager.service';
 import { ElectronService } from './../../../../core/services/electron/electron.service';
 import { ActiveFileManagerService } from './../../../../service/active-file-manager.service';
 import { Component, Input, ElementRef, ViewChild, NgZone, ChangeDetectorRef } from '@angular/core';
-import { IPossessionFiles } from '../../../../service/file-tree.service';
+import { IPossessionFiles, FileTreeService } from '../../../../service/file-tree.service';
 import { sep, normalize } from 'path';
 import { DomSanitizer } from '@angular/platform-browser';
 
@@ -26,7 +26,8 @@ export class ProssessionFileComponent {
     private ngZone: NgZone,
     private electronService: ElectronService,
     private changeDetectorRef: ChangeDetectorRef,
-    private fileManagerService: FileManagerService
+    private fileManagerService: FileManagerService,
+    private fileTreeService: FileTreeService,
   ) { }
 
   isImage() {
@@ -38,6 +39,28 @@ export class ProssessionFileComponent {
       }
     }
     return false;
+  }
+
+  copyName(event: DragEvent) {
+    console.log(event);
+
+    if (this.renameFlg) {
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
+    const rootdir = normalize(this.fileTreeService.getITreeWorkSpaceDir());
+    let targetdir = normalize(this.file.dir);
+    targetdir = targetdir.replace(rootdir, '');
+    const reg = RegExp(/\/|\\/, 'g');
+    targetdir = targetdir.replace(reg, '/');
+    targetdir = targetdir.replace(/^\//, '');
+    const dep = this.activeFileManagerService.getActiveMd().depth;
+    let depPath = '';
+    for (let i = 1; i < dep; i++) {
+      depPath = '../' + depPath;
+    }
+    event.dataTransfer.setData("text/plain", `![${this.file.name}](${depPath}${targetdir}/${this.file.name})`);
   }
 
   openLightbox(event) {

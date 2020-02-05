@@ -80,6 +80,10 @@ export class FileTreeService {
     return normalize(this.treeWorkSpace.dir + sep + `index.md`);
   }
 
+  getITreeWorkSpaceDir(): string {
+    return this.treeWorkSpace.dir;
+  }
+
   /**
    * フォルダを開く
    *
