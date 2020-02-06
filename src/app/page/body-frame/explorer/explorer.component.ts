@@ -54,7 +54,6 @@ export class ExplorerComponent implements AfterContentInit {
       const reg = new RegExp(this.getDirName() + '$');
       this.file.dir = this.iTreeWorkSpace.dir.replace(reg, '');
       this.file.name = this.getDirName();
-      console.log(`debugggg`);
 
     });
     const last = this.saveDataService.readJsonPropatry(EJsonPropertySingleString.lastWorkSpaceName);

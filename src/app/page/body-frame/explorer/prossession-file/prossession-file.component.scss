@@ -19,6 +19,7 @@
     color: $PRI-FONT-COLOR;
   }
 }
+
 a {
   text-decoration: none;
 }
@@ -29,4 +30,8 @@ a {
 
 .active {
   background-color: rgba(255, 255, 255, 0.1);
+}
+
+.contextmenu {
+  background-color: rgba(255, 255, 255, 0.2);
 }

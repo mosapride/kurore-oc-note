@@ -7,6 +7,13 @@ import { sep, normalize } from 'path';
 import { DomSanitizer } from '@angular/platform-browser';
 
 
+enum FileType {
+  directory,
+  image,
+  markdown,
+  other
+};
+
 @Component({
   selector: 'app-prossession-file',
   templateUrl: './prossession-file.component.html',
@@ -20,6 +27,7 @@ export class ProssessionFileComponent {
   newFolderFlg = false;
   newFileFlg = false;
   renameFlg = false;
+  contextmenuFlg = false;
   constructor(
     private activeFileManagerService: ActiveFileManagerService,
     private sanitizer: DomSanitizer,
@@ -34,15 +42,37 @@ export class ProssessionFileComponent {
     if (this.file.isDirectory) {
       return false;
     } else {
-      if (this.file.name.match(/\.png$|\.gif$|\.jpeg$|\..jpg/)) {
+      if (this.file.name.match(/\.png$|\.gif$|\.jpeg$|\..jpg$/)) {
         return true;
       }
     }
     return false;
   }
 
+
+  getEnumFileType() {
+    return FileType;
+  }
+
+
+  isType(): FileType {
+    if (this.file.isDirectory) {
+      return FileType.directory;
+    }
+
+    if (this.file.name.match(/\.png$|\.gif$|\.jpeg$|\..jpg$/)) {
+      return FileType.image;
+    }
+
+    if (this.file.name.match(/\.md$/)) {
+      return FileType.markdown;
+    }
+
+    return FileType.other;
+
+  }
+
   copyName(event: DragEvent) {
-    console.log(event);
 
     if (this.renameFlg) {
       event.preventDefault();
@@ -100,11 +130,13 @@ export class ProssessionFileComponent {
 
 
   onRightClick(file: IPossessionFiles) {
+    this.contextmenuFlg = true;
     if (file.isDirectory) {
       this.rightClickOnDirectory(file);
     } else {
       this.rightClickOnFile(file);
     }
+    // this.contextmenuFlg = false;
   }
 
   /**
@@ -152,6 +184,7 @@ export class ProssessionFileComponent {
           this.renameFlg = true;
           this.changeDetectorRef.detectChanges();
           this.rename.nativeElement.focus();
+          this.rename.nativeElement.setSelectionRange(0, this.file.name.length);
         });
       }
     }));
@@ -165,6 +198,7 @@ export class ProssessionFileComponent {
     }));
     menu.popup({
       window: this.electronService.remote.getCurrentWindow(), callback: () => {
+        this.contextmenuFlg = false;
       }
     });
   }
@@ -197,6 +231,11 @@ export class ProssessionFileComponent {
           this.renameFlg = true;
           this.changeDetectorRef.detectChanges();
           this.rename.nativeElement.focus();
+          let length = this.file.name.length
+          if (this.file.name.split('.').length === 2) {
+            length = length - this.file.name.split('.')[1].length - 1 ;
+          }
+          this.rename.nativeElement.setSelectionRange(0, length);
         });
       }
     }));
@@ -210,6 +249,7 @@ export class ProssessionFileComponent {
     }));
     menu.popup({
       window: this.electronService.remote.getCurrentWindow(), callback: () => {
+        this.contextmenuFlg = false;
       }
     });
   }

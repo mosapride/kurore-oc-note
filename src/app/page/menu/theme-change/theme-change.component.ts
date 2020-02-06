@@ -128,7 +128,6 @@ export class ThemeChangeComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    console.log(`app-theme-change`);
     const css = this.saveDataService.readJsonPropatry(EJsonPropertySingleString.hightlightTheme);
     if (css) {
       this.highlightTheme = css;
