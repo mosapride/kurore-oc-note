@@ -55,7 +55,7 @@ export class ProssessionFileComponent {
   }
 
 
-  isType(): FileType {
+  getFileType(): FileType {
     if (this.file.isDirectory) {
       return FileType.directory;
     }
