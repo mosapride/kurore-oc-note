@@ -6,6 +6,8 @@ import { IPossessionFiles, FileTreeService } from '../../../../service/file-tree
 import { sep, normalize } from 'path';
 import { DomSanitizer } from '@angular/platform-browser';
 
+let dragItem: IPossessionFiles;
+let hoverTimer: NodeJS.Timer;
 
 enum FileType {
   directory,
@@ -20,7 +22,6 @@ enum FileType {
   styleUrls: ['./prossession-file.component.scss']
 })
 export class ProssessionFileComponent {
-  // @ViewChild('item', { static: true }) item: ElementRef;
   @ViewChild('rename', { static: false }) rename: ElementRef;
   @ViewChild('lightbox', { static: false }) lightbox: ElementRef;
   @Input() file: IPossessionFiles;
@@ -28,6 +29,7 @@ export class ProssessionFileComponent {
   newFileFlg = false;
   renameFlg = false;
   contextmenuFlg = false;
+  dragOverFlg = false;
   constructor(
     private activeFileManagerService: ActiveFileManagerService,
     private sanitizer: DomSanitizer,
@@ -37,6 +39,56 @@ export class ProssessionFileComponent {
     private fileManagerService: FileManagerService,
     private fileTreeService: FileTreeService,
   ) { }
+
+  onDragLeave(event: DragEvent, file: IPossessionFiles) {
+    this.dragOverFlg = false;
+    event.preventDefault();
+    if (hoverTimer) {
+      clearTimeout(hoverTimer);
+      hoverTimer = undefined;
+    }
+  }
+
+  onDragExit(event: DragEvent) {
+    event.preventDefault();
+    if (hoverTimer) {
+      clearTimeout(hoverTimer);
+      hoverTimer = undefined;
+    }
+  }
+
+  onDragOver(event: DragEvent, file: IPossessionFiles) {
+    this.dragOverFlg = true;
+    event.preventDefault();
+    if (hoverTimer !== undefined) {
+      return;
+    }
+    hoverTimer = setTimeout(() => {
+      this.file.openFlg = true;
+    }, 1200);
+
+  }
+
+  onDrop(event: DragEvent) {
+    this.dragOverFlg = false;
+    if (hoverTimer) {
+      clearTimeout(hoverTimer);
+      hoverTimer = undefined;
+    }
+    // a to b
+    event.preventDefault();
+    if (normalize(dragItem.dir) !== normalize(this.file.dir + sep + this.file.name)) {
+      this.fileManagerService.renameSync(normalize(dragItem.dir + sep + dragItem.name), normalize(this.file.dir + sep + this.file.name + sep + dragItem.name));
+    }
+
+  }
+  onDragEnd(event: DragEvent) {
+    event.preventDefault();
+  }
+
+  onDragStart(file: IPossessionFiles) {
+    dragItem = file;
+  }
 
   isImage() {
     if (this.file.isDirectory) {
@@ -233,7 +285,7 @@ export class ProssessionFileComponent {
           this.rename.nativeElement.focus();
           let length = this.file.name.length
           if (this.file.name.split('.').length === 2) {
-            length = length - this.file.name.split('.')[1].length - 1 ;
+            length = length - this.file.name.split('.')[1].length - 1;
           }
           this.rename.nativeElement.setSelectionRange(0, length);
         });

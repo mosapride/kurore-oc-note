@@ -1,7 +1,13 @@
 <div>
-
   <ng-container *ngIf="getFileType() === getEnumFileType().directory">
-    <div class="item" [style.padding-left]="((file.depth - 1) * 10) + 5 + 'px'" (click)="clickEvent(file , $event)" [ngClass]="{'active': isActive(file) , 'contextmenu' : contextmenuFlg}" (contextmenu)="onRightClick(file)">
+    <div class="item" [style.padding-left]="((file.depth - 1) * 10) + 5 + 'px'" (click)="clickEvent(file , $event)" [ngClass]="{'active': isActive(file) , 'contextmenu' : contextmenuFlg , 'dragover' : dragOverFlg}" (contextmenu)="onRightClick(file)"
+      (drop)="onDrop($event)"
+      (dragstart)="onDragStart(file)"
+      (dragover)="onDragOver($event , file)"
+      (dragleave)="onDragLeave($event , file)"
+      (dragexit)="onDragExit($event)"
+      draggable="true"
+    >
       <app-icon [isDirectory]="true" [openFlg]="file.openFlg" [name]="file.name"></app-icon>
       <span class="item-name">
         <ng-container *ngIf="renameFlg">
@@ -14,7 +20,11 @@
     </div>
   </ng-container>
   <ng-container *ngIf="getFileType() === getEnumFileType().image">
-    <a #lightbox href="" (dragstart)="copyName($event)" [style.padding-left]="((file.depth - 1) * 10) + 5 + 'px'" [ngClass]="{'active': isActive(file) , 'contextmenu' : contextmenuFlg}" (click)="openLightbox($event)" class="item" (contextmenu)="onRightClick(file)">
+    <a #lightbox href="" (dragstart)="copyName($event)" [style.padding-left]="((file.depth - 1) * 10) + 5 + 'px'" [ngClass]="{'active': isActive(file) , 'contextmenu' : contextmenuFlg}" (click)="openLightbox($event)" class="item" (contextmenu)="onRightClick(file)"
+      (drop)="onDragEnd($event)"
+      (dragstart)="onDragStart(file)"
+      draggable="true"
+    >
       <app-icon [isDirectory]="false" [openFlg]="file.openFlg" [name]="file.name"></app-icon>
       <span class="item-name">
         <ng-container *ngIf="renameFlg">
@@ -27,7 +37,11 @@
     </a>
   </ng-container>
   <ng-container *ngIf="getFileType() === getEnumFileType().markdown">
-    <div class="item" [style.padding-left]="((file.depth - 1) * 10) + 5 + 'px'" (click)="clickEvent(file , $event)" [ngClass]="{'active': isActive(file) , 'contextmenu' : contextmenuFlg}" (contextmenu)="onRightClick(file)">
+    <div class="item" [style.padding-left]="((file.depth - 1) * 10) + 5 + 'px'" (click)="clickEvent(file , $event)" [ngClass]="{'active': isActive(file) , 'contextmenu' : contextmenuFlg}" (contextmenu)="onRightClick(file)"
+      (drop)="onDragEnd($event)"
+      (dragstart)="onDragStart(file)"
+      draggable="true"
+    >
       <app-icon [isDirectory]="false" [openFlg]="file.openFlg" [name]="file.name"></app-icon>
       <span class="item-name">
         <ng-container *ngIf="renameFlg">
@@ -40,7 +54,11 @@
     </div>
   </ng-container>
   <ng-container *ngIf="getFileType() === getEnumFileType().other">
-    <div class="item" [style.padding-left]="((file.depth - 1) * 10) + 5 + 'px'" (click)="clickEvent(file , $event)" [ngClass]="{'active': isActive(file) , 'contextmenu' : contextmenuFlg}" (contextmenu)="onRightClick(file)">
+    <div class="item" [style.padding-left]="((file.depth - 1) * 10) + 5 + 'px'" (click)="clickEvent(file , $event)" [ngClass]="{'active': isActive(file) , 'contextmenu' : contextmenuFlg}" (contextmenu)="onRightClick(file)"
+      (drop)="onDragEnd($event)"
+      (dragstart)="onDragStart(file)"
+      draggable="true"
+    >
       <app-icon [isDirectory]="false" [openFlg]="file.openFlg" [name]="file.name"></app-icon>
       <span class="item-name">
         <ng-container *ngIf="renameFlg">
