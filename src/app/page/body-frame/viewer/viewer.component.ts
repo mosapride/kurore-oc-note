@@ -27,6 +27,11 @@ export class ViewerComponent implements OnInit {
       this.data = data;
       this.html = marked(data, new MarketOption(this.activeFileManagerService, this.fileManagerService).getOption());
     });
+
+    this.activeFileManagerService.$editorCleanSubject.asObservable().subscribe(()=>{
+      this.data = '';
+      this.html = marked(this.data, new MarketOption(this.activeFileManagerService, this.fileManagerService).getOption());
+    })
   }
 
 

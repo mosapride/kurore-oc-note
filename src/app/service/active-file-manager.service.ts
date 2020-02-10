@@ -26,6 +26,7 @@ export class ActiveFileManagerService {
   markdownContents: string;
   $markdownContentsSubject: Subject<string>;
   $activeFileSubject: Subject<IPossessionFiles>;
+  $editorCleanSubject: Subject<void>;
 
 
   constructor(
@@ -35,6 +36,7 @@ export class ActiveFileManagerService {
   ) {
     this.$activeFileSubject = new Subject<IPossessionFiles>();
     this.$markdownContentsSubject = new Subject<string>();
+    this.$editorCleanSubject = new Subject<void>();
   }
 
   /**
@@ -64,6 +66,12 @@ export class ActiveFileManagerService {
     this.activePossesionFiles = file;
     this.activeContentChangeFlg = false;
     this.$activeFileSubject.next(this.activePossesionFiles);
+  }
+
+  editorClean() {
+    this.activePossesionFiles = undefined;
+    this.activeContentChangeFlg = false;
+    this.$editorCleanSubject.next();
   }
 
   /**

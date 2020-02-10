@@ -117,6 +117,11 @@ export class EditorComponent implements OnInit {
       this.activeFileManagerService.setMdContentChange(this.codeInstance.getValue(), true);
       this.viewFileName = pross.name;
     });
+
+    this.activeFileManagerService.$editorCleanSubject.asObservable().subscribe(() => {
+      this.codeInstance.getDoc().clearHistory();
+      this.codeInstance.setValue('');
+    });
   }
 
 

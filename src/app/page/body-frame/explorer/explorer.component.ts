@@ -1,3 +1,4 @@
+import { HistoryService } from './../../../service/history.service';
 import { ActiveFileManagerService } from './../../../service/active-file-manager.service';
 import { sep } from 'path';
 import { FileManagerService } from './../../../service/file-manager.service';
@@ -22,10 +23,14 @@ export class ExplorerComponent implements AfterContentInit {
     private saveDataService: SaveDataService,
     private fileManagerService: FileManagerService,
     private activeFileManagerService: ActiveFileManagerService,
+    private historyService: HistoryService,
   ) { }
 
   open() {
-    this.ed.setWorkSpace();
+    this.ed.setWorkSpace(() => {
+      this.historyService.clearHistory();
+      this.activeFileManagerService.editorClean();
+    });
   }
 
   close() {

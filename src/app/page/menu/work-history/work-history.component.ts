@@ -1,6 +1,11 @@
+import { FileManagerService } from './../../../service/file-manager.service';
+import { FileTreeService } from './../../../service/file-tree.service';
+import { ActiveFileManagerService } from './../../../service/active-file-manager.service';
+import { HistoryService } from './../../../service/history.service';
 import { ElectronService } from './../../../core/services/electron/electron.service';
 import { SaveDataService, EJsonPropertyArray, EJsonPropertySingleString } from './../../../service/save-data.service';
 import { Component, OnInit, HostListener, Input } from '@angular/core';
+import { sep } from 'path';
 
 @Component({
   selector: 'app-work-history',
@@ -27,7 +32,10 @@ export class WorkHistoryComponent implements OnInit {
   // workSpaces: string[] = [];
   constructor(
     private saveDataService: SaveDataService,
-    private electronService: ElectronService,
+    private historyService: HistoryService,
+    private activeFileManagerService: ActiveFileManagerService,
+    private fileTreeService: FileTreeService,
+    private fileManagerService: FileManagerService,
   ) { }
 
 
@@ -50,8 +58,19 @@ export class WorkHistoryComponent implements OnInit {
 
   changeWorkSpace(w: string): void {
     this.saveDataService.writeJsonPropatry(EJsonPropertySingleString.lastWorkSpaceName, w);
-    this.electronService.remote.app.relaunch();
-    this.electronService.remote.app.exit(0);
+    this.historyService.clearHistory();
+    this.activeFileManagerService.editorClean();
+    this.fileTreeService.setTreeRoot(w);
+    this.showFlg = false;
+    if (w) {
+      if (this.fileManagerService.isDirectory(w)) {
+        this.fileTreeService.setTreeRoot(w);
+        if (this.fileManagerService.isFile(w + sep + 'index.md')) {
+          const poss = this.fileTreeService.getPossessionFiles(w + sep + 'index.md');
+          this.activeFileManagerService.setActiveMd(poss);
+        }
+      }
+    }
   }
 
   /**
@@ -60,7 +79,7 @@ export class WorkHistoryComponent implements OnInit {
    * @param {MouseEvent} event
    * @memberof WorkHistoryComponent
    */
-  stopPropagation(event : MouseEvent) {
+  stopPropagation(event: MouseEvent) {
     event.stopPropagation();
   }
 

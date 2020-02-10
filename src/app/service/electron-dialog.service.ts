@@ -39,15 +39,14 @@ export class ElectronDialogService {
    * @returns {void}
    * @memberof ElectronDialogService
    */
-  setWorkSpace(): void {
+  setWorkSpace(callback: (path: string) => void): void {
     this.dialog.showOpenDialog(this.es.remote.getCurrentWindow(), { properties: ['openDirectory'] })
       .then(folders => {
         if (folders.filePaths.length === 0) {
           return;
         } else {
+          callback(folders.filePaths[0]);
           this.fileTreeService.setTreeRoot(folders.filePaths[0]);
-          this.es.remote.app.relaunch();
-          this.es.remote.app.exit(0);
         }
       });
   }

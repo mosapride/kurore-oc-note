@@ -1,8 +1,10 @@
+import { FileManagerService } from './../../service/file-manager.service';
 import { HistoryService } from './../../service/history.service';
 import { Component } from '@angular/core';
 import { ElectronDialogService } from '../../service/electron-dialog.service';
 import { ActiveFileManagerService } from '../../service/active-file-manager.service';
 import { FileTreeService } from '../../service/file-tree.service';
+import { sep } from 'path';
 
 @Component({
   selector: 'app-menu',
@@ -15,7 +17,8 @@ export class MenuComponent {
     private electronDialogService: ElectronDialogService,
     private activeFileManagerService: ActiveFileManagerService,
     private fileTreeService: FileTreeService,
-    public historyService: HistoryService
+    private  historyService: HistoryService,
+    private fileManagerService : FileManagerService,
   ) { }
 
   /**
@@ -63,7 +66,19 @@ export class MenuComponent {
   }
 
   open() {
-    this.electronDialogService.setWorkSpace();
+    this.electronDialogService.setWorkSpace((w) => {
+      this.historyService.clearHistory();
+      this.activeFileManagerService.editorClean();
+      if (w) {
+        if (this.fileManagerService.isDirectory(w)) {
+          this.fileTreeService.setTreeRoot(w);
+          if (this.fileManagerService.isFile(w + sep + 'index.md')) {
+            const poss = this.fileTreeService.getPossessionFiles(w + sep + 'index.md');
+            this.activeFileManagerService.setActiveMd(poss);
+          }
+        }
+      }
+    });
   }
 
   debug() {
