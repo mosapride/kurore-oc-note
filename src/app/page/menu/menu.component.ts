@@ -17,8 +17,8 @@ export class MenuComponent {
     private electronDialogService: ElectronDialogService,
     private activeFileManagerService: ActiveFileManagerService,
     private fileTreeService: FileTreeService,
-    private  historyService: HistoryService,
-    private fileManagerService : FileManagerService,
+    public historyService: HistoryService,
+    private fileManagerService: FileManagerService,
   ) { }
 
   /**

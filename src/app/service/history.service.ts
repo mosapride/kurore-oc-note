@@ -31,7 +31,7 @@ export class HistoryService {
    *
    * @memberof HistoryService
    */
-  clearHistory(): void {
+  public clearHistory(): void {
     this.possessionFilesHistory = [];
     this.historyNo = 1;
     this.historyFlg = false;
