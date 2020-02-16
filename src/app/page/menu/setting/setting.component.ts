@@ -1,5 +1,5 @@
-import { ElectronService } from './../../../core/services/electron/electron.service';
-import { SaveDataService, EJsonPropertyArray, EJsonPropertySingleString } from './../../../service/save-data.service';
+import { ElectronService } from '../../../core/services/electron/electron.service';
+import { SaveDataService, EJsonPropertyArray, EJsonPropertySingleString } from '../../../service/save-data.service';
 import { Component, OnInit, HostListener, Input } from '@angular/core';
 
 
@@ -101,11 +101,11 @@ const theme: string[] = [
 ];
 
 @Component({
-  selector: 'app-theme-change',
-  templateUrl: './theme-change.component.html',
-  styleUrls: ['./theme-change.component.scss']
+  selector: 'app-setting',
+  templateUrl: './setting.component.html',
+  styleUrls: ['./setting.component.scss']
 })
-export class ThemeChangeComponent implements OnInit {
+export class SettingComponent implements OnInit {
   /**
    * 当コンポーネントが表示されている状態で`Escape`を押した場合に終了させる。
    *

@@ -1,0 +1,14 @@
+<ng-container *ngIf="showFlg">
+  <div class="background" (click)="showFlg = false">
+    <div class="work-history" (click)="stopPropagation($event)">
+      <div class="title">Theme: Code Blocks</div>
+      <select (change)="changeTheme(highlightTheme)" [(ngModel)]="highlightTheme">
+        <option *ngFor="let t of theme" [value]="t">{{t}}</option>
+      </select>
+      <button (click)="saveTheme(highlightTheme)">Save Theme</button>
+      <div>
+        <a href="https://highlightjs.org/" target="_blank">use highlight.js</a>
+      </div>
+    </div>
+  </div>
+</ng-container>

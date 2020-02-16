@@ -35,6 +35,12 @@
       }
     }
   }
+  a {
+    color : $PRI-FONT-COLOR;
+    width: 100%;
+    display: inline-block;
+    text-align: right;
+  }
 }
 
 option:checked {
