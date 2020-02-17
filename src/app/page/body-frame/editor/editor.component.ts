@@ -62,6 +62,7 @@ export class EditorComponent implements OnInit {
       instance.refresh();
     });
 
+    this.codeInstance.setOption('theme' , 'default');
 
     this.codeInstance.on('paste', (instance) => {
       const ctype = this.electronService.clipboard.availableFormats();
