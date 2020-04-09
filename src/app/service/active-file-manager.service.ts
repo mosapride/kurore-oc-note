@@ -1,18 +1,16 @@
 import { FileManagerService } from './file-manager.service';
-import { SAVE_DIALOG } from './electron-dialog.service';
+import { Injectable } from '@angular/core';
+import { IPossessionFiles } from './file-tree.service';
+import { Subject } from 'rxjs';
+import { ElectronDialogService, SAVE_DIALOG } from './electron-dialog.service';
+import { ElectronService } from '../core/services';
+import { sep } from 'path';
+
 /* --------------------------------------------------------------------
  * Activeファイル管理サービス.
  *
  * 現在選択中のファイルの管理を行う.
  * --------------------------------------------------------------------*/
-
-import { Injectable } from '@angular/core';
-import { IPossessionFiles } from './file-tree.service';
-import { Subject } from 'rxjs';
-import { ElectronDialogService } from './electron-dialog.service';
-import { ElectronService } from '../core/services';
-import { sep } from 'path';
-
 
 @Injectable({
   providedIn: 'root'

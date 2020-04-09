@@ -1,4 +1,4 @@
-# markdonw Editor
+# markdown Editor
 
 Markdownエディタアプリ
 
