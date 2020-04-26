@@ -61,7 +61,11 @@ export class ViewerComponent implements OnInit {
         href = event.target['dataset'].outerlink;
         event.preventDefault();
         event.stopPropagation();
-        this.electronService.shell.openExternal(normalize(`${this.activeFileManagerService.getPath()}/./${href}`));
+        if (href.match(/http/)) {
+          this.electronService.shell.openExternal(href);
+        } else {
+          this.electronService.shell.openExternal(normalize(`${this.activeFileManagerService.getPath()}/./${href}`));
+        }
         return;
       }
       href = href.replace(/\//g, sep);
