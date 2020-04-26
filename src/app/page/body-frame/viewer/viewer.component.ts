@@ -5,7 +5,7 @@ import { ActiveFileManagerService } from './../../../service/active-file-manager
 import { Component, OnInit, HostListener } from '@angular/core';
 import * as hljs from 'highlight.js';
 import * as marked from 'marked';
-import { sep } from 'path';
+import { sep, normalize } from 'path';
 
 @Component({
   selector: 'app-viewer',
@@ -28,7 +28,7 @@ export class ViewerComponent implements OnInit {
       this.html = marked(data, new MarketOption(this.activeFileManagerService, this.fileManagerService).getOption());
     });
 
-    this.activeFileManagerService.$editorCleanSubject.asObservable().subscribe(()=>{
+    this.activeFileManagerService.$editorCleanSubject.asObservable().subscribe(() => {
       this.data = '';
       this.html = marked(this.data, new MarketOption(this.activeFileManagerService, this.fileManagerService).getOption());
     })
@@ -61,7 +61,7 @@ export class ViewerComponent implements OnInit {
         href = event.target['dataset'].outerlink;
         event.preventDefault();
         event.stopPropagation();
-        this.electronService.shell.openExternal(href);
+        this.electronService.shell.openExternal(normalize(`${this.activeFileManagerService.getPath()}/./${href}`));
         return;
       }
       href = href.replace(/\//g, sep);
