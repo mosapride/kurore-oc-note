@@ -163,6 +163,10 @@ class MarketOption {
       let markfile = href.replace(/\//g, sep);
       markfile = this.activeFileManagerService.getPath() + sep + markfile;
 
+      if (href.match('http://') || href.match('https://'))  {
+        return `<a href="javascript:void(0)" title="${href}" alt="${href}" data-outerLink="${href}" target="_blank" class="external-link" title="${title}">${text}</a>`;
+      }
+
       // markdownファイルの場合
       if (markfile.match(/\.md$/)) {
         if (this.fileManagerService.isStatSync(markfile)) {
